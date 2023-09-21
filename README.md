@@ -1,6 +1,6 @@
 # chamada_inteligente
 
-A new Flutter project.
+Trabalho da disciplina de Engenharia de Software II que tem como objetivo implementar um software mobile de chamada inteligente para professores e alunos da universdade.
 
 ## Getting Started
 
