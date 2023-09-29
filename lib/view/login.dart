@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../controller/login_controller.dart';
 import '../helper/database_helper.dart';
+import 'package:sqflite/sqflite.dart';
 import '../model/user.dart';
 import 'cadastro.dart';
 
