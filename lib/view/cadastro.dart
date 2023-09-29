@@ -17,8 +17,7 @@ class CadastroPage extends StatefulWidget {
 
 class _CadastroPageState extends State<CadastroPage> {
   final _formKey = GlobalKey<FormState>();
-  String? _name, _email, _password, matricula;
-  int? is_teacher;
+  String? _name, _email, _password, _matricula, _is_teacher;
   late CadastroController controller;
 
   _CadastroPageState() {
@@ -32,7 +31,8 @@ class _CadastroPageState extends State<CadastroPage> {
       form.save();
       bool cadastrado = await controller.verifyEmail(_email!);
       if (cadastrado) {
-        User user = User(email: _email!, name: _name!, password: _password!, matricula: matricula!, is_teacher: is_teacher!);
+        User user = User(email: _email!, name: _name!, password: _password!, matricula: _matricula!, is_teacher: _is_teacher!);
+        print(user.name);
         controller.saveUser(user);
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -93,6 +93,30 @@ class _CadastroPageState extends State<CadastroPage> {
                           maxLines: 1,
                           obscureText: true,
                           onChanged: (value) => {_password = value},
+                          keyboardType: TextInputType.text,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Insira sua senha!';
+                            }
+                            return null;
+                          }),
+                          FormInput(
+                          label: "Matrícula",
+                          maxLines: 1,
+                          obscureText: false,
+                          onChanged: (value) => {_matricula = value},
+                          keyboardType: TextInputType.text,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Insira sua senha!';
+                            }
+                            return null;
+                          }),
+                          FormInput(
+                          label: "Cargo [Professor || Aluno]",
+                          maxLines: 1,
+                          obscureText: false,
+                          onChanged: (value) => {_is_teacher = value},
                           keyboardType: TextInputType.text,
                           validator: (value) {
                             if (value == null || value.isEmpty) {

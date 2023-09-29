@@ -47,6 +47,7 @@ class _LoginPageState extends State<LoginPage> {
             _loginStatus = LoginStatus.signIn;
           });
         } else {
+          print(user.name);
           ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Usuário não registrado!")));
         }
