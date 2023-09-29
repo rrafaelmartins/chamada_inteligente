@@ -41,7 +41,7 @@ Future<User> getLogin(String email, String password) async {
     name: "",
     password: "",
     matricula: "",
-    is_teacher: "",
+    is_teacher: -1,
   );
 }
 }

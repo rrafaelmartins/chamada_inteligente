@@ -6,7 +6,7 @@ class User {
   String name;
   String password;
   String matricula;
-  String is_teacher;
+  int? is_teacher;
 
   User(
       {this.id,

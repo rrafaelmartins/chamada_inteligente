@@ -40,7 +40,7 @@ class CadastroController {
       name: "",
       password: "",
       matricula: "",
-      is_teacher: "",
+      is_teacher: -1,
     );
   }
 
