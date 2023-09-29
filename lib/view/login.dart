@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../controller/login_controller.dart';
 import '../helper/database_helper.dart';
 import '../model/user.dart';
+import 'cadastro.dart';
 
 enum LoginStatus { notSignIn, signIn }
 
@@ -30,8 +31,8 @@ class _LoginPageState extends State<LoginPage> {
 
   void _submit() async {
 
-  //final dbHelper = DatabaseHelper();     //COMANDO PARA INICIAR O DB; TESTE APENAS
-  //await dbHelper.initDb();
+  final dbHelper = DatabaseHelper();     //COMANDO PARA INICIAR O DB; TESTE APENAS
+  await dbHelper.initDb();
   
     final form = _formKey.currentState;
 
@@ -129,6 +130,12 @@ class _LoginPageState extends State<LoginPage> {
                               child: ElevatedButton(
                                   onPressed: _submit,
                                   child: const Text("Login"))),
+                        ElevatedButton(
+                              onPressed: () => {
+                                    Navigator.pushNamed(
+                                        context, CadastroPage.routeName)
+                                  },
+                              child: const Text("Cadastre-se")),
                         ]),
                       ),
                       GestureDetector(
