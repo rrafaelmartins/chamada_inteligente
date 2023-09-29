@@ -1,4 +1,5 @@
 import 'package:chamada_inteligente/view/home_page.dart';
+import 'package:chamada_inteligente/view/home_professor.dart';
 import 'package:chamada_inteligente/form/form_input.dart';
 import 'package:chamada_inteligente/styles/theme_colors.dart';
 import 'package:flutter/material.dart';
@@ -31,8 +32,8 @@ class _LoginPageState extends State<LoginPage> {
 
   void _submit() async {
 
-  final dbHelper = DatabaseHelper();     //COMANDO PARA INICIAR O DB; TESTE APENAS
-  await dbHelper.initDb();
+  //final dbHelper = DatabaseHelper();     //COMANDO PARA INICIAR O DB; TESTE APENAS
+  //await dbHelper.initDb();
   
     final form = _formKey.currentState;
 
@@ -152,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
               ))),
         );
       case LoginStatus.signIn:
-        return const HomePage();
+        return const HomeProfessor();
     }
   }
 }
