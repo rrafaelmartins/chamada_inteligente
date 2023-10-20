@@ -1,3 +1,4 @@
+import 'package:chamada_inteligente/view/home_aluno.dart';
 import 'package:chamada_inteligente/view/home_page.dart';
 import 'package:chamada_inteligente/view/home_professor.dart';
 import 'package:chamada_inteligente/form/form_input.dart';
@@ -30,22 +31,18 @@ class _LoginPageState extends State<LoginPage> {
     controller = LoginController();
   }
 
-  void _submit() async {
-
-  //final dbHelper = DatabaseHelper();     //COMANDO PARA INICIAR O DB; TESTE APENAS
-  //await dbHelper.initDb();
-  
+  Future<void> _submit() async {
     final form = _formKey.currentState;
-
     if (form!.validate()) {
       form.save();
-
       try {
         User user = await controller.getLogin(_email!, _password!);
         if (user.id != -1) {
           savePref(1, user.id!, user.name, user.email, user.password);
+
           setState(() {
             _loginStatus = LoginStatus.signIn;
+            _navigateToCorrectPage(user);
           });
         } else {
           print(user.name);
@@ -56,6 +53,24 @@ class _LoginPageState extends State<LoginPage> {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.toString())));
       }
+    }
+  }
+
+  void _navigateToCorrectPage(User user) {
+    if (user.is_teacher == "Aluno") {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (BuildContext context) => HomeAluno()),
+        (route) => false,
+      );
+    } else if (user.is_teacher == "Professor") {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (BuildContext context) => HomeProfessor()),
+        (route) => false,
+      );
+    } else {
+      // Lidar com outros casos, se necessário
     }
   }
 
@@ -100,60 +115,54 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    switch (_loginStatus) {
-      case LoginStatus.notSignIn:
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text("Login"),
-            backgroundColor: ThemeColors.dark,
-            centerTitle: true,
-          ),
-          backgroundColor: ThemeColors.background,
-          body: Container(
-              margin: const EdgeInsets.all(20),
-              child: SingleChildScrollView(
-                  child: Center(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Image.asset('images/logo.png', height: 200),
-                      Form(
-                        key: _formKey,
-                        child: Column(children: [
-                          FormInput(
-                              label: "Usuário",
-                              onChanged: (newValue) => _email = newValue),
-                          FormInput(
-                              label: "Senha",
-                              obscureText: true,
-                              onChanged: (newValue) => _password = newValue),
-                          Container(
-                              margin: const EdgeInsets.only(top: 20),
-                              child: ElevatedButton(
-                                  onPressed: _submit,
-                                  child: const Text("Login"))),
-                        ElevatedButton(
-                              onPressed: () => {
-                                    Navigator.pushNamed(
-                                        context, CadastroPage.routeName)
-                                  },
-                              child: const Text("Cadastre-se")),
-                        ]),
-                      ),
-                      GestureDetector(
-                        onTap: _entrarSemConta,
-                        child: Container(
-                            margin: const EdgeInsets.only(top: 40),
-                            child: const Text(
-                              "Entrar sem uma conta",
-                              style: TextStyle(color: Colors.cyan),
-                            )),
-                      )
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Login"),
+        backgroundColor: ThemeColors.dark,
+        centerTitle: true,
+      ),
+      backgroundColor: ThemeColors.background,
+      body: Container(
+          margin: const EdgeInsets.all(20),
+          child: SingleChildScrollView(
+              child: Center(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Image.asset('images/logo.png', height: 200),
+                  Form(
+                    key: _formKey,
+                    child: Column(children: [
+                      FormInput(
+                          label: "Usuário",
+                          onChanged: (newValue) => _email = newValue),
+                      FormInput(
+                          label: "Senha",
+                          obscureText: true,
+                          onChanged: (newValue) => _password = newValue),
+                      Container(
+                          margin: const EdgeInsets.only(top: 20),
+                          child: ElevatedButton(
+                              onPressed: _submit, child: const Text("Login"))),
+                      ElevatedButton(
+                          onPressed: () => {
+                                Navigator.pushNamed(
+                                    context, CadastroPage.routeName)
+                              },
+                          child: const Text("Cadastre-se")),
                     ]),
-              ))),
-        );
-      case LoginStatus.signIn:
-        return const HomeProfessor();
-    }
+                  ),
+                  GestureDetector(
+                    onTap: _entrarSemConta,
+                    child: Container(
+                        margin: const EdgeInsets.only(top: 40),
+                        child: const Text(
+                          "Entrar sem uma conta",
+                          style: TextStyle(color: Colors.cyan),
+                        )),
+                  )
+                ]),
+          ))),
+    );
   }
 }

@@ -1,6 +1,8 @@
+import 'package:chamada_inteligente/view/login.dart';
 import 'package:chamada_inteligente/view/view_turma.dart';
 import 'package:flutter/material.dart';
 import 'package:chamada_inteligente/styles/theme_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeProfessor extends StatefulWidget {
   static String routeName = "/homeprofessor";
@@ -36,7 +38,7 @@ class _HomeProfessorState extends State<HomeProfessor> {
         leading: IconButton(
           icon: Image.asset('images/logout.png'),
           onPressed: () {
-            // Implemente a ação de logout aqui
+            _logout(context); // Passe o contexto aqui
           },
         ),
         title: Row(
@@ -78,4 +80,17 @@ class _HomeProfessorState extends State<HomeProfessor> {
       ),
     );
   }
+}
+
+void _logout(BuildContext context) async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  await preferences.clear();
+
+  Navigator.pushAndRemoveUntil(
+    context,
+    MaterialPageRoute(
+      builder: (BuildContext context) => LoginPage(),
+    ),
+    (route) => false,
+  );
 }

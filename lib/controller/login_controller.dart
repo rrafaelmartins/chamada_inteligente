@@ -1,47 +1,51 @@
+import 'package:chamada_inteligente/view/home_aluno.dart';
+import 'package:chamada_inteligente/view/home_professor.dart';
+import 'package:flutter/material.dart';
+
 import '../helper/database_helper.dart';
 import '../model/user.dart';
 
 class LoginController {
-DatabaseHelper con = DatabaseHelper();
+  DatabaseHelper con = DatabaseHelper();
 
-Future<int> saveUser(User user) async {
-  var db = await con.db;
+  Future<int> saveUser(User user) async {
+    var db = await con.db;
 
-  int result = await db.insert("user", user.toMap());
+    int result = await db.insert("user", user.toMap());
 
-  return result;
-}
+    return result;
+  }
 
-Future<int> deleteUser(User user) async {
-  var db = await con.db;
+  Future<int> deleteUser(User user) async {
+    var db = await con.db;
 
-  int result = await db.delete("user", where: "id=?", whereArgs: [user.id]);
+    int result = await db.delete("user", where: "id=?", whereArgs: [user.id]);
 
-  return result;
-}
+    return result;
+  }
 
 // a partir do user e senha, tenta pegar o login
-Future<User> getLogin(String email, String password) async {
-  var db = await con.db;
+  Future<User> getLogin(String email, String password) async {
+    var db = await con.db;
 
-  String sql = """
+    String sql = """
   SELECT * FROM user 
   WHERE email='$email' AND password='$password';
   """;
 
-  var result = await db.rawQuery(sql);
+    var result = await db.rawQuery(sql);
 
-  if (result.isNotEmpty) {
-    return User.fromMap(result.first);
+    if (result.isNotEmpty) {
+      return User.fromMap(result.first);
+    }
+
+    return User(
+      id: -1,
+      email: "",
+      name: "",
+      password: "",
+      matricula: "",
+      is_teacher: "",
+    );
   }
-
-  return User(
-    id: -1,
-    email: "",
-    name: "",
-    password: "",
-    matricula: "",
-    is_teacher: "",
-  );
-}
 }

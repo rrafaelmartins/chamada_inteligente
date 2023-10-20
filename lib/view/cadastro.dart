@@ -1,4 +1,3 @@
-
 import 'package:chamada_inteligente/form/form_input.dart';
 import 'package:flutter/material.dart';
 import '../controller/cadastro_controller.dart';
@@ -9,7 +8,7 @@ enum LoginStatus { notSignIn, signIn }
 
 class CadastroPage extends StatefulWidget {
   static String routeName = "/cadastro";
-  const CadastroPage({super.key});
+  const CadastroPage({Key? key});
 
   @override
   State<CadastroPage> createState() => _CadastroPageState();
@@ -31,7 +30,12 @@ class _CadastroPageState extends State<CadastroPage> {
       form.save();
       bool cadastrado = await controller.verifyEmail(_email!);
       if (cadastrado) {
-        User user = User(email: _email!, name: _name!, password: _password!, matricula: _matricula!, is_teacher: _is_teacher!);
+        User user = User(
+            email: _email!,
+            name: _name!,
+            password: _password!,
+            matricula: _matricula!,
+            is_teacher: _is_teacher!);
         print(user.name);
         controller.saveUser(user);
         Navigator.pop(context);
@@ -56,83 +60,97 @@ class _CadastroPageState extends State<CadastroPage> {
       ),
       backgroundColor: ThemeColors.background,
       body: Container(
-          margin: const EdgeInsets.all(20),
-          child: SingleChildScrollView(
-              child: Center(
+        margin: const EdgeInsets.all(20),
+        child: SingleChildScrollView(
+          child: Center(
             child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Image.asset('images/logo.png', height: 200),
-                  Form(
-                    key: _formKey,
-                    child: Column(children: [
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Image.asset('images/logo.png', height: 200),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
                       FormInput(
-                          label: "Nome",
-                          maxLines: 1,
-                          onChanged: (value) => {_name = value},
-                          keyboardType: TextInputType.text,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Insira seu nome!';
-                            }
-                            return null;
-                          }),
+                        label: "Nome",
+                        maxLines: 1,
+                        onChanged: (value) => {_name = value},
+                        keyboardType: TextInputType.text,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Insira seu nome!';
+                          }
+                          return null;
+                        },
+                      ),
                       FormInput(
-                          label: "E-mail",
-                          maxLines: 1,
-                          onChanged: (value) => {_email = value},
-                          keyboardType: TextInputType.emailAddress,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Insira seu e-mail!';
-                            }
-                            return null;
-                          }),
+                        label: "E-mail",
+                        maxLines: 1,
+                        onChanged: (value) => {_email = value},
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Insira seu e-mail!';
+                          }
+                          return null;
+                        },
+                      ),
                       FormInput(
-                          label: "Senha",
-                          maxLines: 1,
-                          obscureText: true,
-                          onChanged: (value) => {_password = value},
-                          keyboardType: TextInputType.text,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Insira sua senha!';
-                            }
-                            return null;
-                          }),
-                          FormInput(
-                          label: "Matrícula",
-                          maxLines: 1,
-                          obscureText: false,
-                          onChanged: (value) => {_matricula = value},
-                          keyboardType: TextInputType.text,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Insira sua senha!';
-                            }
-                            return null;
-                          }),
-                          FormInput(
-                          label: "Cargo [Professor || Aluno]",
-                          maxLines: 1,
-                          obscureText: false,
-                          onChanged: (value) => {_is_teacher = value},
-                          keyboardType: TextInputType.text,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Insira sua senha!';
-                            }
-                            return null;
-                          }),
+                        label: "Senha",
+                        maxLines: 1,
+                        obscureText: true,
+                        onChanged: (value) => {_password = value},
+                        keyboardType: TextInputType.text,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Insira sua senha!';
+                          }
+                          return null;
+                        },
+                      ),
+                      FormInput(
+                        label: "Matrícula",
+                        maxLines: 1,
+                        obscureText: false,
+                        onChanged: (value) => {_matricula = value},
+                        keyboardType: TextInputType.text,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Insira sua senha!';
+                          }
+                          return null;
+                        },
+                      ),
+                      FormInput(
+                        label: "Cargo [Professor ou Aluno]",
+                        maxLines: 1,
+                        obscureText: false,
+                        onChanged: (value) => {_is_teacher = value},
+                        keyboardType: TextInputType.text,
+                        validator: (value) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              (value != 'Professor' && value != 'Aluno')) {
+                            return 'Informe um cargo válido (Professor ou Aluno)';
+                          }
+                          return null;
+                        },
+                      ),
                       Container(
-                          margin: const EdgeInsets.only(top: 20),
-                          child: ElevatedButton(
-                              onPressed: _submit,
-                              child: const Text("Cadastrar")))
-                    ]),
+                        margin: const EdgeInsets.only(top: 20),
+                        child: ElevatedButton(
+                          onPressed: _submit,
+                          child: const Text("Cadastrar"),
+                        ),
+                      ),
+                    ],
                   ),
-                ]),
-          ))),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

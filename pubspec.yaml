@@ -37,6 +37,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   sqflite: ^2.3.0
   shared_preferences: ^2.2.1
+  slide_to_confirm: ^1.0.2
+  slider_button: ^2.0.0
+  
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +73,10 @@ flutter:
     - images/lista.png
     - images/olho.png
     - images/relogio.png
+    - images/historico.png
+    - images/confirmar.png
+    - images/presenca.png
+
     
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
