@@ -1,15 +1,18 @@
+import 'package:chamada_inteligente/view/visualizar_chamada_prof.dart';
 import 'package:flutter/material.dart';
 
-class TurmaPage extends StatelessWidget {
-  final String nomeTurma;
 
-  TurmaPage({required this.nomeTurma});
+class TurmaPage extends StatelessWidget {
+  final String disciplina;
+  final String codTurma;
+
+  TurmaPage({required this.disciplina, required this.codTurma});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(nomeTurma),
+        title: Text(disciplina),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -22,7 +25,15 @@ class TurmaPage extends StatelessWidget {
               SizedBox(height: 50.0),
               _buildRowWithIconAndText('bandeira.png', "Finalizar chamada"),
               SizedBox(height: 50.0),
-              _buildRowWithIconAndText('olho.png', "Visualizar chamada"),
+              InkWell( // Adicionei o InkWell aqui
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => VisualizarProf(turmaChamada: disciplina.toUpperCase(), codTurma: codTurma.toUpperCase(),)),
+                  );
+                },
+                child: _buildRowWithIconAndText('olho.png', "Visualizar chamada"),
+              ),
               SizedBox(height: 50.0),
               _buildRowWithIconAndText('agenda.png', "Agendar chamada"),
               SizedBox(height: 50.0),

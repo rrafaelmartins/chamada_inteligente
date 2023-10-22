@@ -70,7 +70,7 @@ class _HomeProfessorState extends State<HomeProfessor> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        TurmaPage(nomeTurma: turmas[index]['nome']!),
+                        TurmaPage(disciplina: turmas[index]['nome']!, codTurma: turmas[index]['turma']!,),
                   ),
                 );
               },
