@@ -16,7 +16,7 @@ class CadastroPage extends StatefulWidget {
 
 class _CadastroPageState extends State<CadastroPage> {
   final _formKey = GlobalKey<FormState>();
-  String? _name, _email, _password, _matricula, _is_teacher;
+  String? _name, _email, _password, _matricula, _is_teacher, _selectedRole;
   late CadastroController controller;
 
   _CadastroPageState() {
@@ -29,7 +29,9 @@ class _CadastroPageState extends State<CadastroPage> {
     if (form!.validate()) {
       form.save();
       bool cadastrado = await controller.verifyEmail(_email!);
-      if (cadastrado) {
+      bool matriculaexis = await controller.isMatriculaExist(_matricula!);
+
+      if (cadastrado == true && matriculaexis == false) {
         User user = User(
             email: _email!,
             name: _name!,
@@ -42,9 +44,13 @@ class _CadastroPageState extends State<CadastroPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Cadastrado com sucesso')),
         );
-      } else {
+      } else if (cadastrado == false) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Usuário já cadastrado')),
+        );
+      } else if (matriculaexis == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Número de matrícula já existe')),
         );
       }
     }
@@ -121,17 +127,25 @@ class _CadastroPageState extends State<CadastroPage> {
                           return null;
                         },
                       ),
-                      FormInput(
-                        label: "Cargo [Professor ou Aluno]",
-                        maxLines: 1,
-                        obscureText: false,
-                        onChanged: (value) => {_is_teacher = value},
-                        keyboardType: TextInputType.text,
+                      DropdownButtonFormField<String>(
+                        isExpanded: true,
+                        hint: Text("Selecione um cargo"),
+                        value: _selectedRole,
+                        onChanged: (newValue) {
+                          setState(() {
+                            _selectedRole = newValue;
+                            _is_teacher = newValue; // Use o valor selecionado
+                          });
+                        },
+                        items: ["Professor", "Aluno"].map((role) {
+                          return DropdownMenuItem(
+                            value: role,
+                            child: Text(role),
+                          );
+                        }).toList(),
                         validator: (value) {
-                          if (value == null ||
-                              value.isEmpty ||
-                              (value != 'Professor' && value != 'Aluno')) {
-                            return 'Informe um cargo válido (Professor ou Aluno)';
+                          if (value == null) {
+                            return 'Selecione um cargo';
                           }
                           return null;
                         },

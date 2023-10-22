@@ -5,6 +5,14 @@ class CadastroController {
   DatabaseHelper con = DatabaseHelper();
 
   Future<int> saveUser(User user) async {
+    var matriculaExists = await isMatriculaExist(user.matricula);
+
+    if (matriculaExists) {
+      // A matrícula já existe, você pode lidar com isso da maneira que preferir.
+      // Neste exemplo, estamos retornando -1 para indicar que o cadastro é inválido.
+      return -1;
+    }
+
     var db = await con.db;
 
     int result = await db.insert("user", user.toMap());
@@ -58,5 +66,19 @@ class CadastroController {
       return true;
     }
     return false;
+  }
+
+  Future<bool> isMatriculaExist(String matricula) async {
+    var db = await con.db;
+
+    String sql = """
+    SELECT * FROM user 
+    WHERE matricula='$matricula';
+    """;
+
+    var result = await db.rawQuery(sql);
+
+    return result
+        .isNotEmpty; // Retorna true se a matrícula já existe, caso contrário, retorna false.
   }
 }
