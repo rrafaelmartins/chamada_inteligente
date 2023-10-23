@@ -1,3 +1,4 @@
+import 'package:chamada_inteligente/view/agendar_prof.dart';
 import 'package:chamada_inteligente/view/visualizar_chamada_prof.dart';
 import 'package:flutter/material.dart';
 
@@ -35,7 +36,16 @@ class TurmaPage extends StatelessWidget {
                 child: _buildRowWithIconAndText('olho.png', "Visualizar chamada"),
               ),
               SizedBox(height: 50.0),
-              _buildRowWithIconAndText('agenda.png', "Agendar chamada"),
+              InkWell( // Adicionei o InkWell aqui
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AgendarProfScreen()),
+                  );
+                },
+                child: _buildRowWithIconAndText('agenda.png', "Agendar chamada"),
+              ),
+              
               SizedBox(height: 50.0),
               _buildRowWithIconAndText('relogio.png', "Histórico de chamadas"),
             ],

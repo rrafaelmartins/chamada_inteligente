@@ -10,26 +10,43 @@ import '../helper/database_helper.dart';
 import '../model/user.dart';
 import 'cadastro.dart';
 
+import 'package:flutter/material.dart';
+
 class AgendarProfScreen extends StatefulWidget {
   @override
   _AgendarProfScreenState createState() => _AgendarProfScreenState();
 }
 
 class _AgendarProfScreenState extends State<AgendarProfScreen> {
+  bool isCallActive = false;
+  TimeOfDay startTime = TimeOfDay(hour: 7, minute: 0);
+  TimeOfDay endTime = TimeOfDay(hour: 9, minute: 0);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: ThemeColors.appBar,
         title: Text(
-          "Agendar Prof",
-          style: TextStyle(color: ThemeColors.text),
+          "Agendar Chamada",
+          style: TextStyle(color: Colors.white),
         ),
+        actions: [
+            Switch(
+              value: isCallActive,
+              onChanged: (value) {
+                setState(() {
+                  isCallActive = value; // Atualiza o estado do switch
+                });
+              },
+            ),
+        ],
       ),
       backgroundColor: ThemeColors.background,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
@@ -72,19 +89,45 @@ class _AgendarProfScreenState extends State<AgendarProfScreen> {
             ),
             Row(
               children: [
-                Text(
-                  "INÍCIO: 07:00",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: ThemeColors.grey,
+                InkWell(
+                  onTap: () async {
+                    TimeOfDay? selectedTime = await showTimePicker(
+                      context: context,
+                      initialTime: startTime,
+                    );
+                    if (selectedTime != null && selectedTime != startTime) {
+                      setState(() {
+                        startTime = selectedTime;
+                      });
+                    }
+                  },
+                  child: Text(
+                    "INÍCIO: ${startTime.format(context)}",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: ThemeColors.grey,
+                    ),
                   ),
                 ),
                 SizedBox(width: 10),
-                Text(
-                  "FIM: 09:00",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: ThemeColors.grey,
+                InkWell(
+                  onTap: () async {
+                    TimeOfDay? selectedTime = await showTimePicker(
+                      context: context,
+                      initialTime: endTime,
+                    );
+                    if (selectedTime != null && selectedTime != endTime) {
+                      setState(() {
+                        endTime = selectedTime;
+                      });
+                    }
+                  },
+                  child: Text(
+                    "FIM: ${endTime.format(context)}",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: ThemeColors.grey,
+                    ),
                   ),
                 ),
               ],
