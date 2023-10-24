@@ -1,14 +1,6 @@
-import 'package:chamada_inteligente/view/home_aluno.dart';
-import 'package:chamada_inteligente/view/home_page.dart';
-import 'package:chamada_inteligente/view/home_professor.dart';
-import 'package:chamada_inteligente/form/form_input.dart';
 import 'package:chamada_inteligente/styles/theme_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../controller/login_controller.dart';
-import '../helper/database_helper.dart';
-import '../model/user.dart';
-import 'cadastro.dart';
+
 
 import 'package:flutter/material.dart';
 

@@ -1,5 +1,4 @@
 import 'package:chamada_inteligente/view/home_aluno.dart';
-import 'package:chamada_inteligente/view/home_page.dart';
 import 'package:chamada_inteligente/view/home_professor.dart';
 import 'package:chamada_inteligente/form/form_input.dart';
 import 'package:chamada_inteligente/styles/theme_colors.dart';
@@ -97,15 +96,6 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  _entrarSemConta() {
-    Navigator.pushAndRemoveUntil<dynamic>(
-      context,
-      MaterialPageRoute<dynamic>(
-        builder: (BuildContext context) => const HomePage(),
-      ),
-      (route) => false,
-    );
-  }
 
   @override
   void initState() {
@@ -152,15 +142,6 @@ class _LoginPageState extends State<LoginPage> {
                           child: const Text("Cadastre-se")),
                     ]),
                   ),
-                  GestureDetector(
-                    onTap: _entrarSemConta,
-                    child: Container(
-                        margin: const EdgeInsets.only(top: 40),
-                        child: const Text(
-                          "Entrar sem uma conta",
-                          style: TextStyle(color: Colors.cyan),
-                        )),
-                  )
                 ]),
           ))),
     );
