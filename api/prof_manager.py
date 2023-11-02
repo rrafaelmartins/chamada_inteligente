@@ -1,6 +1,7 @@
 from flask import request, jsonify
 from app import  app
 
+
 chamadas = []  # Lista para armazenar histórico de chamadas (placeholder)
 
 @app.route('/agendar_chamada', methods=['POST'])

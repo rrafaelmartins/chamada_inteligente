@@ -1,22 +1,41 @@
-
+#TO-DO response tem que ser em formato JSON
 from flask import request, jsonify
 from app import  app
+from comandos_bando import conexao
+from flask_cors import CORS
+from app import app
+import mysql.connector
 
-# For simplicity, let's create a mock user database as a dictionary
-users = {
-    "user@example.com": "password123"
-}
+CORS(app)
+""" ... """
 
-@app.route('/login', methods=['POST'])
+conexao = mysql.connector.connect(
+    host='localhost',
+    user='root',
+    password='xd3ibcx3',
+    database='chamadainteligente'
+)
+
+
+@app.route('/Login', methods=['POST'])
 def login():
-    email = request.json.get('email')
-    password = request.json.get('password')
-    
-    # Check if the user exists and the password is correct
-    if email in users and users[email] == password:
-        return jsonify({"status": "success", "message": "Logged in successfully"}), 200
-    else:
+    matricula = request.json.get('matricula')
+    password = request.json.get('senha')
+    response = consultaAluno(matricula, password)
+    if response == []:
         return jsonify({"status": "error", "message": "Invalid credentials"}), 401
+    else:
+        return response
+    
+
+def consultaAluno(matricula, password):
+    cursor = conexao.cursor()
+    comando = f'SELECT * from aluno WHERE matricula = "{matricula}" AND senha = "{password}"'
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    cursor.close()
+    return resultado
+
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

@@ -6,9 +6,10 @@ import mysql.connector
 conexao = mysql.connector.connect(
     host='localhost',
     user='root',
-    password='200810@Romano',
+    password='xd3ibcx3',
     database='chamadainteligente'
 )
+
 #Classe para instanciar um Aluno -- Talvez não precise dessa classe, não pensei em algo mais eficiente
 #Não precisamos passar o ID pois é auto_increment
 class Aluno:
@@ -26,7 +27,34 @@ class Professor:
         self.departamento = departamento
         self.senha =  senha
 
+class Turma:
+    def __init__(self, id, disciplina_id, data_inicio, professor_id):
+        self.id = id
+        self.disciplina_id = disciplina_id
+        self.data_inicio = data_inicio
+        self.professor_id = professor_id
 
+class Chamada:
+    def __init__(self, id, turma_id, data_chamada, abertura_chamada, fechamento_chamada):
+        self.id = id
+        self.turma_id = turma_id
+        self.data_chamada = data_chamada
+        self.abertura_chamada = abertura_chamada
+        self.fechamento_chamada = fechamento_chamada
+
+class ChamadaAluno:
+    def __init__(self, id, turma_id, data_chamada, abertura_chamada, fechamento_chamada):
+        self.id = id
+        self.turma_id = turma_id
+        self.data_chamada = data_chamada
+        self.abertura_chamada = abertura_chamada
+        self.fechamento_chamada = fechamento_chamada
+        
+class Disciplina:
+    def __init__(self, id, nome, tipo):
+        self.id = id
+        self.nome = nome
+        self.tipo = tipo
 
 #Função para adicionar Aluno no banco
 def insereAluno(matricula, nome, cpf, senha):
@@ -36,7 +64,7 @@ def insereAluno(matricula, nome, cpf, senha):
     cursor.execute(comando)
     conexao.commit()
     cursor.close()
-    conexao.close()
+    #conexao.close()
     return new_aluno
 
 #Função para adicionar um Professor no banco
@@ -47,8 +75,18 @@ def insereProfessor(nome, matricula, departamento, senha):
     cursor.execute(comando)
     conexao.commit()
     cursor.close()
-    conexao.close()
+    #conexao.close()
     return new_professor
+
+#Função para adicionar uma Turma no banco
+def insereTurma(id, disciplina_id, data_inicio, professor_id):
+    new_turma = Turma(id, disciplina_id, data_inicio, professor_id)
+    cursor = conexao.cursor()
+    comando = f'INSERT INTO turma (id, disciplina_id, data_inicio, professor_id) VALUES ("{new_turma.id}","{new_turma.disciplina_id}","{new_turma.data_inicio}","{new_turma.professor_id}")'
+    cursor.execute(comando)
+    conexao.commit() #pois é uma operacao de escrita
+    cursor.close()
+    return new_turma
 
 #Função para consultar um Aluno no banco
 def consultaAluno():
@@ -58,7 +96,8 @@ def consultaAluno():
     resultado = cursor.fetchall()
     print(resultado)
     cursor.close()
-    conexao.close()
+    #conexao.close()
+
 #Função para consultar um Professor no banco
 def consultaProfessor():
     cursor = conexao.cursor()
@@ -70,15 +109,13 @@ def consultaProfessor():
     conexao.close()
 
 
-def existeAluno(): 
-    #asdsdadads
 
+"""insereAluno('15848232','Juliana','19571','senhateste')
+insereProfessor('Leonardo Murta','1238547','Computação','123senha')
 
-#insereAluno('15848232','Juliana','19571','senhateste')
-#insereProfessor('Leonardo Murta','1238547','Computação','123senha')
-#consultaAluno()
-#consultaProfessor()
-
+consultaAluno()
+consultaProfessor()
+"""
 #Executa os comandos da conexão
 #cursor = conexao.cursor()
 
@@ -100,7 +137,3 @@ def existeAluno():
 #Encerra a conexão
 #conexao.close()
 #
-
-
-
-

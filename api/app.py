@@ -1,5 +1,4 @@
 from flask import Flask
-from flask_api import CORS
 
 class FlaskSingleton:
     instance = None

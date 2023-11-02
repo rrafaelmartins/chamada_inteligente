@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:chamada_inteligente/view/home_aluno.dart';
 import 'package:chamada_inteligente/view/home_professor.dart';
 import 'package:chamada_inteligente/form/form_input.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../controller/login_controller.dart';
 import '../helper/database_helper.dart';
+import 'package:http/http.dart' as http;
 import '../model/user.dart';
 import 'cadastro.dart';
 
@@ -22,7 +25,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   LoginStatus _loginStatus = LoginStatus.notSignIn;
   final _formKey = GlobalKey<FormState>();
-  String? _email, _password;
+  String? matricula, _password;
   late LoginController controller;
   var value;
 
@@ -30,29 +33,23 @@ class _LoginPageState extends State<LoginPage> {
     controller = LoginController();
   }
 
-  Future<void> _submit() async {
-    final form = _formKey.currentState;
-    if (form!.validate()) {
-      form.save();
-      try {
-        User user = await controller.getLogin(_email!, _password!);
-        if (user.id != -1) {
-          savePref(1, user.id!, user.name, user.email, user.password);
+  Future<http.Response> _submit() async {
+    var url ='https://127.0.0.1/login';
 
-          setState(() {
-            _loginStatus = LoginStatus.signIn;
-            _navigateToCorrectPage(user);
-          });
-        } else {
-          print(user.name);
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Usuário não registrado!")));
-        }
-      } catch (e) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.toString())));
-      }
-    }
+    Map data = {
+    'matricula': matricula,
+    'senha': _password,
+  };
+  //encode Map to JSON
+  var body = json.encode(data);
+
+
+  var response = await http.post(url as Uri,
+      headers: {"Content-Type": "application/json"},
+      body: body
+  );
+    
+    return response;
   }
 
   void _navigateToCorrectPage(User user) {
@@ -125,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: Column(children: [
                       FormInput(
                           label: "Usuário",
-                          onChanged: (newValue) => _email = newValue),
+                          onChanged: (newValue) => matricula = newValue),
                       FormInput(
                           label: "Senha",
                           obscureText: true,
