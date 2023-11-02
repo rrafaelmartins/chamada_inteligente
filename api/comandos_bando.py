@@ -12,24 +12,27 @@ conexao = mysql.connector.connect(
 #Classe para instanciar um Aluno -- Talvez não precise dessa classe, não pensei em algo mais eficiente
 #Não precisamos passar o ID pois é auto_increment
 class Aluno:
-    def __init__(self, matricula, nome, cpf):
+    def __init__(self, matricula, nome, cpf, senha):
         self.matricula = matricula
         self.nome = nome
         self.cpf = cpf
+        self.senha = senha
+       
 
 class Professor:
-    def __init__(self, nome, matricula, departamento):
+    def __init__(self, nome, matricula, departamento, senha):
         self.nome = nome
         self.matricula = matricula
         self.departamento = departamento
+        self.senha =  senha
 
-#class Turma: 
+
 
 #Função para adicionar Aluno no banco
-def insereAluno(matricula, nome, cpf):
-    new_aluno = Aluno(matricula, nome, cpf)
+def insereAluno(matricula, nome, cpf, senha):
+    new_aluno = Aluno(matricula, nome, cpf, senha)
     cursor = conexao.cursor()
-    comando = f'INSERT INTO aluno (matricula,nome,cpf) VALUES ("{new_aluno.matricula}","{new_aluno.nome}","{new_aluno.cpf}")'
+    comando = f'INSERT INTO aluno (matricula,nome,cpf,senha) VALUES ("{new_aluno.matricula}","{new_aluno.nome}","{new_aluno.cpf}","{new_aluno.senha}")'
     cursor.execute(comando)
     conexao.commit()
     cursor.close()
@@ -37,17 +40,17 @@ def insereAluno(matricula, nome, cpf):
     return new_aluno
 
 #Função para adicionar um Professor no banco
-def insereProfessor(nome, matricula, departamento):
-    new_professor = Professor(nome, matricula, departamento)
+def insereProfessor(nome, matricula, departamento, senha):
+    new_professor = Professor(nome, matricula, departamento, senha)
     cursor = conexao.cursor()
-    comando = f'INSERT INTO professor (nome, matricula,departamento) VALUES ("{new_professor.nome}","{new_professor.matricula}","{new_professor.departamento}")'
+    comando = f'INSERT INTO professor (nome, matricula,departamento,senha) VALUES ("{new_professor.nome}","{new_professor.matricula}","{new_professor.departamento}","{new_professor.senha}")'
     cursor.execute(comando)
     conexao.commit()
     cursor.close()
     conexao.close()
     return new_professor
 
-
+#Função para consultar um Aluno no banco
 def consultaAluno():
     cursor = conexao.cursor()
     comando = 'select * from aluno'
@@ -56,7 +59,7 @@ def consultaAluno():
     print(resultado)
     cursor.close()
     conexao.close()
-
+#Função para consultar um Professor no banco
 def consultaProfessor():
     cursor = conexao.cursor()
     comando = 'select * from professor'
@@ -67,10 +70,14 @@ def consultaProfessor():
     conexao.close()
 
 
-#insereAluno('15848232','Juliana','19571')
-#insereProfessor('Leonardo Murta','1238547','Computação')
+def existeAluno(): 
+    #asdsdadads
+
+
+#insereAluno('15848232','Juliana','19571','senhateste')
+#insereProfessor('Leonardo Murta','1238547','Computação','123senha')
 #consultaAluno()
-consultaProfessor()
+#consultaProfessor()
 
 #Executa os comandos da conexão
 #cursor = conexao.cursor()
