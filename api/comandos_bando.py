@@ -43,7 +43,7 @@ resultado = cursor.fetchall()
 cursor.close()
 #Encerra a conexão
 conexao.close()
-
+#
 
 
 
