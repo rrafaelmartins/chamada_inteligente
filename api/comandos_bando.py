@@ -53,7 +53,7 @@ def insereProfessor(nome, matricula, departamento, senha):
 #Função para consultar um Aluno no banco
 def consultaAluno():
     cursor = conexao.cursor()
-    comando = 'select * from aluno'
+    comando = 'select * from aluno where nome = "joao"'
     cursor.execute(comando)
     resultado = cursor.fetchall()
     print(resultado)
@@ -70,15 +70,36 @@ def consultaProfessor():
     conexao.close()
 
 
-def existeAluno(): 
-    #asdsdadads
+def existeAluno(matricula): 
+    cursor = conexao.cursor()
+    comando = f'select * from aluno where matricula = "{matricula}"'
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    if resultado == []:
+        print("Não existe aluno com esse número de matricula")
+    else :
+        print(resultado)
+    cursor.close()
+    conexao.close()
 
+def existeProfessor(matricula): 
+    cursor = conexao.cursor()
+    comando = f'select * from professor where matricula = "{matricula}"'
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    if resultado == []:
+        print("Não existe professor com esse número de matricula")
+    else :
+        print(resultado)
+    cursor.close()
+    conexao.close()
 
 #insereAluno('15848232','Juliana','19571','senhateste')
 #insereProfessor('Leonardo Murta','1238547','Computação','123senha')
 #consultaAluno()
 #consultaProfessor()
-
+#existeAluno('1584232')
+existeProfessor('1522')
 #Executa os comandos da conexão
 #cursor = conexao.cursor()
 
