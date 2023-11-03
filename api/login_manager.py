@@ -25,7 +25,7 @@ def login():
     if response == []:
         return jsonify({"status": "error", "message": "Invalid credentials"}), 401
     else:
-        return response
+        return jsonify(response)
     
 
 def consultaAluno(matricula, password):

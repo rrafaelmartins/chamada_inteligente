@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<http.Response> _submit() async {
-    var url ='https://127.0.0.1/login';
+    var url = Uri.http('192.168.0.104:5000', '/Login');
 
     Map data = {
     'matricula': matricula,
@@ -44,11 +44,11 @@ class _LoginPageState extends State<LoginPage> {
   var body = json.encode(data);
 
 
-  var response = await http.post(url as Uri,
+  var response = await http.post(url,
       headers: {"Content-Type": "application/json"},
       body: body
   );
-    
+    print(response.body);
     return response;
   }
 
