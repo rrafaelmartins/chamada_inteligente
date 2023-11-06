@@ -1,13 +1,10 @@
 #TO-DO response tem que ser em formato JSON
-from flask import request, jsonify
-from app import  app
+from flask import request, jsonify, Blueprint
 from comandos_bando import conexao
-from flask_cors import CORS
-from app import app
 import mysql.connector
 
-CORS(app)
-""" ... """
+
+login_blueprint = Blueprint('login_blueprint', __name__)
 
 conexao = mysql.connector.connect(
     host='localhost',
@@ -17,7 +14,7 @@ conexao = mysql.connector.connect(
 )
 
 
-@app.route('/Login', methods=['POST'])
+@login_blueprint.route('/Login', methods=['POST'])
 def login():
     matricula = request.json.get('matricula')
     password = request.json.get('senha')
@@ -35,7 +32,3 @@ def consultaAluno(matricula, password):
     resultado = cursor.fetchall()
     cursor.close()
     return resultado
-
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)

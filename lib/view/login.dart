@@ -1,5 +1,7 @@
-import 'dart:convert';
+//TO-DO: IMPLEMENTAR NA TELA DE LOGIN UM SWITCH/CHECKBOX/ETC PARA SELECIONAR SE É ALUNO OU PROFESSOR
 
+
+import 'dart:convert';
 import 'package:chamada_inteligente/view/home_aluno.dart';
 import 'package:chamada_inteligente/view/home_professor.dart';
 import 'package:chamada_inteligente/form/form_input.dart';
@@ -52,14 +54,14 @@ class _LoginPageState extends State<LoginPage> {
     return response;
   }
 
-  void _navigateToCorrectPage(User user) {
-    if (user.is_teacher == "Aluno") {
+  void _navigateToCorrectPage(response, cargo) {
+    if (response[0] != [] && cargo == 'Aluno') {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (BuildContext context) => HomeAluno()),
         (route) => false,
       );
-    } else if (user.is_teacher == "Professor") {
+    } else if (response[0] != [] && cargo == 'Professor') {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (BuildContext context) => HomeProfessor()),
