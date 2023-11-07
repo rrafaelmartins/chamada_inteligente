@@ -1,6 +1,3 @@
-//TO-DO: IMPLEMENTAR NA TELA DE LOGIN UM SWITCH/CHECKBOX/ETC PARA SELECIONAR SE É ALUNO OU PROFESSOR
-
-
 import 'dart:convert';
 import 'package:chamada_inteligente/view/home_aluno.dart';
 import 'package:chamada_inteligente/view/home_professor.dart';
@@ -28,6 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   LoginStatus _loginStatus = LoginStatus.notSignIn;
   final _formKey = GlobalKey<FormState>();
   String? matricula, _password;
+  String? _selectedRole;
   late LoginController controller;
   var value;
 
@@ -35,40 +33,49 @@ class _LoginPageState extends State<LoginPage> {
     controller = LoginController();
   }
 
-  Future<http.Response> _submit() async {
-    var url = Uri.http('192.168.0.104:5000', '/Login');
+  Future<void> _submit() async {
+    var url;
+
+    if (_selectedRole == "Aluno"){
+      url = Uri.http('172.20.10.2:5000', '/LoginAluno');
+    }
+    else if (_selectedRole == "Professor"){
+      url = Uri.http('172.20.10.2:5000', '/LoginProfessor'); //TODO: CRIAR ESSE ENDPOINT em login_manager.py
+    }
 
     Map data = {
-    'matricula': matricula,
-    'senha': _password,
-  };
-  //encode Map to JSON
-  var body = json.encode(data);
+      'matricula': matricula,
+      'senha': _password,
+    };
+    var body = json.encode(data);
 
-
-  var response = await http.post(url,
-      headers: {"Content-Type": "application/json"},
-      body: body
-  );
+    var response = await http.post(url,
+        headers: {"Content-Type": "application/json"},
+        body: body,
+        
+    );
     print(response.body);
-    return response;
+
+    List<dynamic> responseData = json.decode(response.body);
+    _navigateToCorrectPage(responseData);
   }
 
-  void _navigateToCorrectPage(response, cargo) {
-    if (response[0] != [] && cargo == 'Aluno') {
+  void _navigateToCorrectPage(List <dynamic> response) {
+    if (response[0] != [] && _selectedRole == 'Aluno') {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (BuildContext context) => HomeAluno()),
         (route) => false,
       );
-    } else if (response[0] != [] && cargo == 'Professor') {
+    } else if (response[0] != [] && _selectedRole == 'Professor') {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (BuildContext context) => HomeProfessor()),
         (route) => false,
       );
     } else {
-      // Lidar com outros casos, se necessário
+      // Handle the error or invalid login
+      print("Invalid login or role not selected");
     }
   }
 
@@ -77,24 +84,18 @@ class _LoginPageState extends State<LoginPage> {
 
     setState(() {
       value = preferences.getInt("value");
-
       _loginStatus = value == 1 ? LoginStatus.signIn : LoginStatus.notSignIn;
     });
   }
 
-  savePref(
-      int value, int id, String username, String email, String pass) async {
+  savePref(int value, int id, String username, String email, String pass) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-
-    setState(() {
-      preferences.setInt("value", value);
-      preferences.setInt("id", id);
-      preferences.setString("username", username);
-      preferences.setString("email", email);
-      preferences.setString("password", pass);
-    });
+    preferences.setInt("value", value);
+    preferences.setInt("id", id);
+    preferences.setString("username", username);
+    preferences.setString("email", email);
+    preferences.setString("password", pass);
   }
-
 
   @override
   void initState() {
@@ -129,16 +130,29 @@ class _LoginPageState extends State<LoginPage> {
                           label: "Senha",
                           obscureText: true,
                           onChanged: (newValue) => _password = newValue),
+                      DropdownButton<String>(
+                        value: _selectedRole,
+                        hint: Text('Select Role'),
+                        items: <String>['Aluno', 'Professor'].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedRole = newValue;
+                          });
+                        },
+                      ),
                       Container(
-                          margin: const EdgeInsets.only(top: 20),
-                          child: ElevatedButton(
-                              onPressed: _submit, child: const Text("Login"))),
-                      ElevatedButton(
-                          onPressed: () => {
-                                Navigator.pushNamed(
-                                    context, CadastroPage.routeName)
-                              },
-                          child: const Text("Cadastre-se")),
+                        margin: const EdgeInsets.only(top: 20),
+                        child: ElevatedButton(
+                          onPressed: _submit,
+                          child: const Text("Login"),
+                        ),
+                      ),
+
                     ]),
                   ),
                 ]),

@@ -8,7 +8,7 @@ turmas = [
     {'codigo': 'TCC00456', 'nome': 'Banco de Dados', 'turma': 'Turma B1 - 2023.2'}
 ]
 
-presencas = {}  # Dicionario pra armazenar presença (key: turma code, value: presence status)
+presencas = {}  #placeholder
 
 @app.route('/list_turmas', methods=['GET'])
 def list_turmas():

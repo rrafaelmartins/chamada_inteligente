@@ -1,12 +1,17 @@
 #import do driver mysql
 import mysql.connector
 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+password = os.getenv('PASSWORD')
+
 #Conectando com o banco de dados, acho que o ideal seria criar um banco para o projeto
-#Aqui estamos acessando ao meu banco próprio
+#Aqui estamos acessando ao meu banco próprio. Substitua pela sua senha de conexão para o MySQL
 conexao = mysql.connector.connect(
     host='localhost',
     user='root',
-    password='xd3ibcx3',
+    password=f'{password}',
     database='chamadainteligente'
 )
 
