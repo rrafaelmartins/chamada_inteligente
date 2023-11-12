@@ -1,6 +1,8 @@
 from flask import Flask
 from flask_cors import CORS
 from login_manager import login_blueprint
+from aluno_manager import aluno_blueprint
+from prof_manager import professor_blueprint
 
 class FlaskSingleton:
     instance = None
@@ -20,6 +22,8 @@ app = FlaskSingleton.get_instance()
 
 
 app.register_blueprint(login_blueprint)
+app.register_blueprint(aluno_blueprint)
+app.register_blueprint(professor_blueprint)
 
 CORS(app)
 """ ... """

@@ -1,20 +1,45 @@
+import 'dart:convert';
+
 import 'package:chamada_inteligente/view/login.dart';
 import 'package:chamada_inteligente/view/view_turma.dart';
 import 'package:flutter/material.dart';
 import 'package:chamada_inteligente/styles/theme_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class HomeProfessor extends StatefulWidget {
   static String routeName = "/homeprofessor";
+  final int id_professor;
+  HomeProfessor({required this.id_professor});
 
-  const HomeProfessor({Key? key}) : super(key: key);
 
   @override
-  State<HomeProfessor> createState() => _HomeProfessorState();
+  State<HomeProfessor> createState() => _HomeProfessorState(id_professor: id_professor);
 }
 
 class _HomeProfessorState extends State<HomeProfessor> {
   // Lista de turmas para demonstração
+  final int id_professor;
+  _HomeProfessorState({required this.id_professor});
+  List<dynamic> turmasBD = [];  // Lista para armazenar as turmas recebidas do BD
+  
+  Future<List<dynamic>> _getTurmas() async {
+    var url = Uri.http('192.168.1.7:5000', '/get_turmas_prof/$id_professor');
+    var response = await http.get(url);
+    List<dynamic> responseData = json.decode(response.body);
+
+    for (var turma in responseData) {
+      List temp = [];
+      temp.add(turma[0]);
+      temp.add(turma[1]);
+      turmasBD.add(temp);
+    }
+
+    return responseData;
+  }
+
+  
+
   final List<Map<String, String>> turmas = [
     {
       'codigo': 'TCC00293 - Engenharia de Software II',
@@ -29,57 +54,90 @@ class _HomeProfessorState extends State<HomeProfessor> {
     // ... Adicione mais turmas conforme necessário
   ];
 
+ 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ThemeColors.background,
-      appBar: AppBar(
-        backgroundColor: ThemeColors.grey,
-        leading: IconButton(
-          icon: Image.asset('images/logout.png'),
-          onPressed: () {
-            _logout(context); // Passe o contexto aqui
-          },
-        ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('images/chapeu.png', width: 30),
-            SizedBox(width: 10),
-            Text('Turmas', style: TextStyle(color: ThemeColors.text)),
-          ],
-        ),
-      ),
-      body: ListView.builder(
-        itemCount: turmas.length,
-        itemBuilder: (context, index) {
-          return Card(
-            color: ThemeColors.formInput,
-            child: ListTile(
-              title: Text(
-                '${turmas[index]['codigo']}: ${turmas[index]['nome']}',
-                style: TextStyle(color: ThemeColors.text),
+Widget build(BuildContext context) {
+  return FutureBuilder<List<dynamic>>(
+    future: _getTurmas(),
+    builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Scaffold(
+          backgroundColor: ThemeColors.background,
+          appBar: AppBar(
+            backgroundColor: ThemeColors.grey,
+            leading: IconButton(
+              icon: Image.asset('images/logout.png'),
+              onPressed: () {
+                _logout(context);
+              },
+            ),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('images/chapeu.png', width: 30),
+                SizedBox(width: 10),
+                Text('Carregando...', style: TextStyle(color: ThemeColors.text)),
+              ],
+            ),
+          ),
+          body: Center(child: CircularProgressIndicator()),
+        );
+      } else {
+        if (snapshot.hasError) {
+          return Text('Erro: ${snapshot.error}');
+        } else {
+          turmasBD = snapshot.data!;
+          return Scaffold(
+            backgroundColor: ThemeColors.background,
+            appBar: AppBar(
+              backgroundColor: ThemeColors.grey,
+              leading: IconButton(
+                icon: Image.asset('images/logout.png'),
+                onPressed: () {
+                  _logout(context);
+                },
               ),
-              subtitle: Text(
-                turmas[index]['turma']!,
-                style: TextStyle(color: ThemeColors.grey),
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('images/chapeu.png', width: 30),
+                  SizedBox(width: 10),
+                  Text('Turmas', style: TextStyle(color: ThemeColors.text)),
+                ],
               ),
-              onTap: () {
-                // Navegar para a página TurmaPage com o nome da turma
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        TurmaPage(disciplina: turmas[index]['nome']!, codTurma: turmas[index]['turma']!,),
+            ),
+            body: ListView.builder(
+              itemCount: turmasBD.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  color: ThemeColors.formInput,
+                  child: ListTile(
+                    title: Text(
+                      '${turmasBD[index][0]}',
+                      style: TextStyle(color: ThemeColors.text),
+                    ),
+                    subtitle: Text(
+                      'Turma: ${turmasBD[index][1]}',
+                      style: TextStyle(color: ThemeColors.grey),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              TurmaPage(disciplina: turmasBD[index][0]!, codTurma: turmasBD[index][1]!,),
+                        ),
+                      );
+                    },
                   ),
                 );
               },
             ),
           );
-        },
-      ),
-    );
-  }
+        }
+      }
+    },
+  );
 }
 
 void _logout(BuildContext context) async {
@@ -93,4 +151,5 @@ void _logout(BuildContext context) async {
     ),
     (route) => false,
   );
+}
 }

@@ -8,8 +8,8 @@ import 'helper/database_helper.dart';
 
 final routes = {
   LoginPage.routeName: (BuildContext context) => const LoginPage(),
-  CadastroPage.routeName: (BuildContext context) => const CadastroPage(),
-  HomeProfessor.routeName: (BuildContext context) => const HomeProfessor(),
+  
+  
 };
 
 void main() {

@@ -13,7 +13,7 @@ conexao = mysql.connector.connect(
     host='localhost',
     user='root',
     password=f'{password}',
-    database='chamadainteligente'
+    database='chamadainteliteste'
 )
 
 
@@ -52,4 +52,3 @@ def consultaProfessor(matricula, password):
     resultado = cursor.fetchall()
     cursor.close()
     return resultado
-

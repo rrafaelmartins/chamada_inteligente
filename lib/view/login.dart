@@ -37,10 +37,10 @@ class _LoginPageState extends State<LoginPage> {
     var url;
 
     if (_selectedRole == "Aluno"){
-      url = Uri.http('172.20.10.2:5000', '/LoginAluno');
+      url = Uri.http('192.168.1.7:5000', '/LoginAluno');
     }
     else if (_selectedRole == "Professor"){
-      url = Uri.http('172.20.10.2:5000', '/LoginProfessor'); //TODO: CRIAR ESSE ENDPOINT em login_manager.py
+      url = Uri.http('192.168.1.7:5000', '/LoginProfessor'); //TODO: CRIAR ESSE ENDPOINT em login_manager.py
     }
 
     Map data = {
@@ -70,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
     } else if (response[0] != [] && _selectedRole == 'Professor') {
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (BuildContext context) => HomeProfessor()),
+        MaterialPageRoute(builder: (BuildContext context) => HomeProfessor(id_professor: response[0][0])),
         (route) => false,
       );
     } else {

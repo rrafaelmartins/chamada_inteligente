@@ -13,7 +13,7 @@ class TurmaPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(disciplina),
+        title: Text('${disciplina}: ${codTurma}'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

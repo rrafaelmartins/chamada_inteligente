@@ -1,6 +1,18 @@
+from flask import request, jsonify, Blueprint
+import mysql.connector
+import os
+from dotenv import load_dotenv
+load_dotenv()
+password = os.getenv('PASSWORD')
 
-from flask import request, jsonify
-from app import  app
+aluno_blueprint = Blueprint('aluno_blueprint', __name__)
+
+conexao = mysql.connector.connect(
+    host='localhost',
+    user='root',
+    password=f'{password}',
+    database='chamadainteliteste'
+)
 
 # Placeholders. Na realidade, isso virá do banco de dados
 turmas = [
@@ -10,15 +22,30 @@ turmas = [
 
 presencas = {}  #placeholder
 
-@app.route('/list_turmas', methods=['GET'])
-def list_turmas():
-    return jsonify(turmas), 200
+@aluno_blueprint.route('/Turmas', methods=['GET'])
+def get_turmas():
+    cursor = conexao.cursor()
+    comando = 'select * from turma'
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    print(resultado)
+    cursor.close()
+    return jsonify(resultado), 200
 
-@app.route('/confirmar_presenca/<string:codigo_turma>', methods=['POST'])
+@aluno_blueprint.route('/confirmar_presenca/<string:codigo_turma>', methods=['POST']) #TO-DO: relacionar aluno à turma
 def confirmar_presenca(codigo_turma):
     presence_status = request.json.get('presence')
     presencas[codigo_turma] = presence_status
     return jsonify({"status": "success", "message": f"Presence for {codigo_turma} marked as {presence_status}"}), 200
+
+
+def consultaAluno(matricula, password):
+    cursor = conexao.cursor()
+    comando = f'SELECT * from aluno WHERE matricula = "{matricula}" AND senha = "{password}"'
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    cursor.close()
+    return resultado
 
 if __name__ == '__main__':
     app.run(debug=True)
