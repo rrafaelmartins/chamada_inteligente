@@ -4,6 +4,7 @@ import 'package:chamada_inteligente/view/login.dart';
 import 'package:chamada_inteligente/view/view_turma.dart';
 import 'package:flutter/material.dart';
 import 'package:chamada_inteligente/styles/theme_colors.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -21,10 +22,11 @@ class _HomeProfessorState extends State<HomeProfessor> {
   // Lista de turmas para demonstração
   final int id_professor;
   _HomeProfessorState({required this.id_professor});
+  var env_url = dotenv.env['URL'];
   List<dynamic> turmasBD = [];  // Lista para armazenar as turmas recebidas do BD
   
   Future<List<dynamic>> _getTurmas() async {
-    var url = Uri.http('192.168.1.7:5000', '/get_turmas_prof/$id_professor');
+    var url = Uri.http('${env_url}', '/get_turmas_prof/$id_professor');
     var response = await http.get(url);
     List<dynamic> responseData = json.decode(response.body);
 

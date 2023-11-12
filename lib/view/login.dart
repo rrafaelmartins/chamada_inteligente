@@ -5,11 +5,10 @@ import 'package:chamada_inteligente/form/form_input.dart';
 import 'package:chamada_inteligente/styles/theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../controller/login_controller.dart';
-import '../helper/database_helper.dart';
 import 'package:http/http.dart' as http;
-import '../model/user.dart';
-import 'cadastro.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+
 
 enum LoginStatus { notSignIn, signIn }
 
@@ -26,21 +25,17 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   String? matricula, _password;
   String? _selectedRole;
-  late LoginController controller;
+  var env_url = dotenv.env['URL'];
   var value;
-
-  _LoginPageState() {
-    controller = LoginController();
-  }
 
   Future<void> _submit() async {
     var url;
 
     if (_selectedRole == "Aluno"){
-      url = Uri.http('192.168.1.7:5000', '/LoginAluno');
+      url = Uri.http('${env_url}', '/LoginAluno');
     }
     else if (_selectedRole == "Professor"){
-      url = Uri.http('192.168.1.7:5000', '/LoginProfessor'); //TODO: CRIAR ESSE ENDPOINT em login_manager.py
+      url = Uri.http('${env_url}', '/LoginProfessor'); //TODO: CRIAR ESSE ENDPOINT em login_manager.py
     }
 
     Map data = {
@@ -64,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
     if (response[0] != [] && _selectedRole == 'Aluno') {
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (BuildContext context) => HomeAluno()),
+        MaterialPageRoute(builder: (BuildContext context) => HomeAluno(id_aluno: response[0][0])),
         (route) => false,
       );
     } else if (response[0] != [] && _selectedRole == 'Professor') {

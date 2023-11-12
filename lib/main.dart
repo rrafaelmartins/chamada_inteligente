@@ -1,6 +1,7 @@
 import 'package:chamada_inteligente/view/cadastro.dart';
 import 'package:chamada_inteligente/view/home_professor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'view/login.dart';
@@ -12,7 +13,9 @@ final routes = {
   
 };
 
-void main() {
+Future<void> main() async{
+
+  await dotenv.load(fileName: ".env");
   runApp(MaterialApp(
     title: "Login",
     debugShowCheckedModeBanner: false,

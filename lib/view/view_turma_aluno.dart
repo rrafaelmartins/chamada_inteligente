@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 
 class ViewTurmaAluno extends StatefulWidget {
-  final String nomeTurma;
+  final String disciplina;
+  final String codTurma;
 
-  ViewTurmaAluno({required this.nomeTurma});
+  ViewTurmaAluno({required this.disciplina, required this.codTurma});
 
   @override
-  State<ViewTurmaAluno> createState() => _ViewTurmaAlunoState();
+  State<ViewTurmaAluno> createState() => _ViewTurmaAlunoState(disciplina: disciplina, codTurma: codTurma);
 }
 
 class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
   bool isSwitched = false; // Estado do Switch
-
+  final String disciplina;
+  final String codTurma;
+  _ViewTurmaAlunoState({required this.disciplina, required this.codTurma});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.nomeTurma),
+        title: Text('${disciplina}: ${codTurma}'),
       ),
       body: Center(
         child: Column(

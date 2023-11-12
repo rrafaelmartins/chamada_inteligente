@@ -22,10 +22,23 @@ turmas = [
 
 presencas = {}  #placeholder
 
-@aluno_blueprint.route('/Turmas', methods=['GET'])
-def get_turmas():
+@aluno_blueprint.route('/get_turmas_aluno/<string:id_aluno>', methods=['GET'])
+def get_turmas_aluno(id_aluno:str):
     cursor = conexao.cursor()
-    comando = 'select * from turma'
+    comando = f"""
+    SELECT 
+        Disciplina.nome, 
+        Turma.codigo_turma 
+    FROM 
+        Inscricao
+    JOIN 
+        Turma ON Inscricao.id_turma = Turma.id_turma
+    JOIN 
+        Disciplina ON Turma.id_disciplina = Disciplina.id_disciplina
+    WHERE 
+        Inscricao.id_aluno = {id_aluno};
+
+    """
     cursor.execute(comando)
     resultado = cursor.fetchall()
     print(resultado)
