@@ -2,7 +2,6 @@ import 'package:chamada_inteligente/view/agendar_prof.dart';
 import 'package:chamada_inteligente/view/visualizar_chamada_prof.dart';
 import 'package:flutter/material.dart';
 
-
 class TurmaPage extends StatelessWidget {
   final String disciplina;
   final String codTurma;
@@ -26,26 +25,34 @@ class TurmaPage extends StatelessWidget {
               SizedBox(height: 50.0),
               _buildRowWithIconAndText('bandeira.png', "Finalizar chamada"),
               SizedBox(height: 50.0),
-              InkWell( // Adicionei o InkWell aqui
+              InkWell(
+                // Adicionei o InkWell aqui
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => VisualizarProf(turmaChamada: disciplina.toUpperCase(), codTurma: codTurma.toUpperCase(),)),
+                    MaterialPageRoute(
+                        builder: (context) => VisualizarProf(
+                              turmaChamada: disciplina.toUpperCase(),
+                              codTurma: codTurma.toUpperCase(),
+                            )),
                   );
                 },
-                child: _buildRowWithIconAndText('olho.png', "Visualizar chamada"),
+                child:
+                    _buildRowWithIconAndText('olho.png', "Visualizar chamada"),
               ),
               SizedBox(height: 50.0),
-              InkWell( // Adicionei o InkWell aqui
+              InkWell(
+                // Adicionei o InkWell aqui
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AgendarProfScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => AgendarProfScreen()),
                   );
                 },
-                child: _buildRowWithIconAndText('agenda.png', "Agendar chamada"),
+                child:
+                    _buildRowWithIconAndText('agenda.png', "Agendar chamada"),
               ),
-              
               SizedBox(height: 50.0),
               _buildRowWithIconAndText('relogio.png', "Histórico de chamadas"),
             ],

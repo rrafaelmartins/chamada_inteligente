@@ -7,7 +7,8 @@ class ViewTurmaAluno extends StatefulWidget {
   ViewTurmaAluno({required this.disciplina, required this.codTurma});
 
   @override
-  State<ViewTurmaAluno> createState() => _ViewTurmaAlunoState(disciplina: disciplina, codTurma: codTurma);
+  State<ViewTurmaAluno> createState() =>
+      _ViewTurmaAlunoState(disciplina: disciplina, codTurma: codTurma);
 }
 
 class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
