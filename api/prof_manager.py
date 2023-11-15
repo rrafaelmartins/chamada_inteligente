@@ -22,7 +22,48 @@ conexao = mysql.connector.connect(
 @professor_blueprint.route('/get_turmas_prof/<string:id_professor>', methods=['GET'])
 def get_turmas(id_professor: str):
     cursor = conexao.cursor()
-    comando = f'select nome, codigo_turma FROM Disciplina JOIN Turma ON Turma.id_disciplina = Disciplina.id_disciplina WHERE id_professor = {id_professor}; '
+    comando = f'select nome, codigo_turma, id_turma FROM Disciplina JOIN Turma ON Turma.id_disciplina = Disciplina.id_disciplina WHERE id_professor = {id_professor}; '
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    print(resultado)
+    cursor.close()
+    return jsonify(resultado), 200
+
+
+@professor_blueprint.route('/get_nomedisciplina_by_turmaid/<string:id_turma>', methods=['GET'])
+def get_nomedisciplina_by_turmaid(id_turma: str):
+    cursor = conexao.cursor()
+    comando = f"""SELECT Disciplina.nome
+                FROM Turma
+                JOIN Disciplina ON Turma.id_disciplina = Disciplina.id_disciplina
+                WHERE Turma.id_turma = {id_turma};"""
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    print(resultado)
+    cursor.close()
+    return jsonify(resultado), 200
+
+
+@professor_blueprint.route('/get_historico/<string:id_turma>', methods=['GET'])
+def get_historico(id_turma: str):
+    cursor = conexao.cursor()
+    comando = f"""SELECT Aluno.matricula, Aluno.primeiro_nome, Aluno.segundo_nome
+                FROM Inscricao
+                JOIN Aluno ON Inscricao.id_aluno = Aluno.id_aluno
+                WHERE Inscricao.id_turma = {id_turma};"""
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    print(resultado)
+    cursor.close()
+    return jsonify(resultado), 200
+
+
+@professor_blueprint.route('/get_nome_prof/<string:id_prof>', methods=['GET'])
+def get_nome_prof(id_prof:str):
+    cursor = conexao.cursor()
+    comando = f"""SELECT CONCAT(primeiro_nome, ' ', segundo_nome) AS nome_completo_professor
+                FROM Professor
+                WHERE id_professor = {id_prof};"""
     cursor.execute(comando)
     resultado = cursor.fetchall()
     print(resultado)

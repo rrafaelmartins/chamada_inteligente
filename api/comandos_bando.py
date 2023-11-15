@@ -12,7 +12,7 @@ conexao = mysql.connector.connect(
     host='localhost',
     user='root',
     password=f'{password}',
-    database='chamadainteligente'
+    database='chamadainteliteste'
 )
 
 #Classe para instanciar um Aluno -- Talvez não precise dessa classe, não pensei em algo mais eficiente

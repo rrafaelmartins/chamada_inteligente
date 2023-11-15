@@ -29,11 +29,16 @@ class _HomeProfessorState extends State<HomeProfessor> {
     var url = Uri.http('${env_url}', '/get_turmas_prof/$id_professor');
     var response = await http.get(url);
     List<dynamic> responseData = json.decode(response.body);
-
+    print("entrou");
     for (var turma in responseData) {
+      //print(turma);
       List temp = [];
       temp.add(turma[0]);
       temp.add(turma[1]);
+      temp.add(turma[2]);
+      /*String strid = turma[2].toString();
+      temp.add(strid);
+      print(strid.runtimeType);*/
       turmasBD.add(temp);
     }
 
@@ -127,7 +132,7 @@ Widget build(BuildContext context) {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              TurmaPage(disciplina: turmasBD[index][0]!, codTurma: turmasBD[index][1]!,),
+                              TurmaPage(disciplina: turmasBD[index][0]!, codTurma: turmasBD[index][1]!, id_turma: turmasBD[index][2]!, id_professor: id_professor),
                         ),
                       );
                     },

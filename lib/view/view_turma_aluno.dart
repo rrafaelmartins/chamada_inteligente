@@ -1,3 +1,4 @@
+import 'package:chamada_inteligente/view/historico_aluno.dart';
 import 'package:flutter/material.dart';
 
 class ViewTurmaAluno extends StatefulWidget {
@@ -26,10 +27,9 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset('images/confirmar.png'), // Imagem 1
-            SizedBox(height: 20), // Espaço entre a primeira e a segunda imagem
+            SizedBox(height: 50), // Espaço entre a primeira e a segunda imagem
 
             Image.asset('images/presenca.png'), // Imagem 2
-            SizedBox(height: 20), // Espaço entre a segunda imagem e o switch
 
             Switch(
               value: isSwitched,
@@ -39,13 +39,37 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
                 });
               },
             ),
-
-            SizedBox(height: 20), // Espaço entre o switch e a terceira imagem
-
-            Image.asset('images/historico.png'), // Imagem 3
-          ],
+            SizedBox(height: 50),
+            InkWell( // Adicionei o InkWell aqui
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HistoricoAluno(turmaChamada: disciplina.toUpperCase(), codTurma: codTurma.toUpperCase(),)),
+                );
+              },
+              child: _buildRowWithIconAndText('relogio.png', "Histórico de chamadas"),
+            ),             
+            ],
+          ),
         ),
-      ),
+    );
+  }
+
+  Widget _buildRowWithIconAndText(String iconName, String text) {
+    return Row(
+      children: [
+        SizedBox(width: 60), // Espaço à esquerda para deslocar
+        Image.asset(
+          'images/$iconName',
+          width: 50,
+          height: 50,
+        ),
+        SizedBox(width: 10),
+        Text(
+          text,
+          style: TextStyle(fontSize: 24.0),
+        ),
+      ],
     );
   }
 }

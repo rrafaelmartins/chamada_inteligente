@@ -1,4 +1,5 @@
 import 'package:chamada_inteligente/view/agendar_prof.dart';
+import 'package:chamada_inteligente/view/historico_prof.dart';
 import 'package:chamada_inteligente/view/visualizar_chamada_prof.dart';
 import 'package:flutter/material.dart';
 
@@ -6,8 +7,10 @@ import 'package:flutter/material.dart';
 class TurmaPage extends StatelessWidget {
   final String disciplina;
   final String codTurma;
+  final int id_turma;
+  final int id_professor;
 
-  TurmaPage({required this.disciplina, required this.codTurma});
+  TurmaPage({required this.disciplina, required this.codTurma, required this.id_turma, required this.id_professor});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,7 @@ class TurmaPage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => VisualizarProf(turmaChamada: disciplina.toUpperCase(), codTurma: codTurma.toUpperCase(),)),
+                    MaterialPageRoute(builder: (context) => VisualizarProf(turmaChamada: disciplina.toUpperCase(), codTurma: codTurma.toUpperCase(), id_turma: id_turma, id_professor: this.id_professor)),
                   );
                 },
                 child: _buildRowWithIconAndText('olho.png', "Visualizar chamada"),
@@ -45,9 +48,16 @@ class TurmaPage extends StatelessWidget {
                 },
                 child: _buildRowWithIconAndText('agenda.png', "Agendar chamada"),
               ),
-              
               SizedBox(height: 50.0),
-              _buildRowWithIconAndText('relogio.png', "Histórico de chamadas"),
+                InkWell( // Adicionei o InkWell aqui
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HistoricoProfessor(turmaChamada: disciplina, codTurma: codTurma)),
+                  );
+                },
+                child: _buildRowWithIconAndText('relogio.png', "Histórico de chamadas"),
+              ),
             ],
           ),
         ),
