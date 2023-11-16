@@ -1,10 +1,9 @@
 import 'dart:convert';
-
 import 'package:chamada_inteligente/styles/theme_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class HistoricoAluno extends StatelessWidget {
   final String turmaChamada;
@@ -35,8 +34,9 @@ class HistoricoAluno extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Visualizar Prof', style: TextStyle(color: ThemeColors.text)),
-        backgroundColor: ThemeColors.appBar,
+      title: Text('Histórico de Chamadas', style: TextStyle(color: Colors.white)),
+        backgroundColor: Color(0xFF005AAA),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -44,65 +44,86 @@ class HistoricoAluno extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text('UNIVERSIDADE FEDERAL FLUMINENSE', style: TextStyle(fontSize: 14, color: ThemeColors.text)),
-              SizedBox(height: 10),
-              Text('PROFESSOR: LEONARDO MURTA', style: TextStyle(fontSize: 14, color: ThemeColors.text)),
-              SizedBox(height: 10),
-              Text('DISCIPLINA: ' + turmaChamada, style: TextStyle(fontSize: 14, color: ThemeColors.text)),
-              SizedBox(height: 10),
-              Text('TURMA: ' + codTurma, style: TextStyle(fontSize: 14, color: ThemeColors.text)),
-              SizedBox(height: 10),
-              // Tabela de chamada
+              Text('UNIVERSIDADE FEDERAL FLUMINENSE', style: TextStyle(fontSize: 14, color: ThemeColors.text, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 10),
+                    RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: ThemeColors.text,
+                        ),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: 'PROFESSOR: ',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold, // Define a palavra "PROFESSOR" em negrito
+                            ),
+                          ),
+                          TextSpan(text: 'nome prof bd'),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: ThemeColors.text,
+                        ),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: 'DISCIPLINA: ',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold, // Define a palavra "DISCIPLINA" em negrito
+                            ),
+                          ),
+                          TextSpan(text: turmaChamada),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: ThemeColors.text,
+                        ),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: 'TURMA: ',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold, // Define a palavra "TURMA" em negrito
+                            ),
+                          ),
+                          TextSpan(text: codTurma),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10),
               Table(
                 border: TableBorder.all(color: Colors.grey, width: 1.0),
                 children: [
                   // Headers da tabela
                   TableRow(children: [
-                    TableCell(
-                      child: Center(child: Text('DATA', textAlign: TextAlign.center)),
-                      verticalAlignment: TableCellVerticalAlignment.middle,
-                    ),
-                    TableCell(
-                      child: Center(child: Text('PRESENTE', textAlign: TextAlign.center)),
-                      verticalAlignment: TableCellVerticalAlignment.middle,
-                    ),
-                    TableCell(
-                      child: Center(child: Text('JUSTIFICAR FALTA', textAlign: TextAlign.center)),
-                      verticalAlignment: TableCellVerticalAlignment.middle,
-                    ),
+                    createTableCellTittle('DATA'),
+                    createTableCellTittle('PRESENTE'),
+                    createTableCellTittle('JUSTIFICAR FALTA'),
                   ]),
+                  // for (var aluno in alunos) // Preencher de acordo com a quantidade de chamadas
                   TableRow(children: [
                     TableCell(
-                      child: Center(child: Text('14/11/2023', textAlign: TextAlign.center)),
+                      child: Center(child: Text('data do vetor', textAlign: TextAlign.center)),
                       verticalAlignment: TableCellVerticalAlignment.middle,
                     ),
                     TableCell(
                       child: Center(
-                        child: Icon(Icons.check, color: Colors.blue),
+                        child: Icon(Icons.check, color: Colors.green),
                       ),
                       verticalAlignment: TableCellVerticalAlignment.middle,
                     ),
                     TableCell(
                       child: Center(
-                        child: Icon(Icons.medical_services_outlined, color: Colors.blue),
-                      ),
-                      verticalAlignment: TableCellVerticalAlignment.middle,
-                    ),
-                  ]),
-                  TableRow(children: [
-                    TableCell(
-                      child: Center(child: Text('16/11/2023', textAlign: TextAlign.center)),
-                      verticalAlignment: TableCellVerticalAlignment.middle,
-                    ),
-                    TableCell(
-                      child: Center(
-                        child: Icon(Icons.check, color: Colors.blue),
-                      ),
-                      verticalAlignment: TableCellVerticalAlignment.middle,
-                    ),
-                    TableCell(
-                      child: Center(
-                        child: Icon(Icons.medical_services_outlined, color: Colors.blue),
+                        child: Icon(Icons.medical_services_outlined, color: Colors.red),
                       ),
                       verticalAlignment: TableCellVerticalAlignment.middle,
                     ),
@@ -116,4 +137,11 @@ class HistoricoAluno extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget createTableCellTittle(String text) {
+  return TableCell(
+    child: Center(child: Text(text, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold),)),
+    verticalAlignment: TableCellVerticalAlignment.middle,
+  );
 }

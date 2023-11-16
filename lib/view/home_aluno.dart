@@ -77,11 +77,11 @@ class _HomeAlunoState extends State<HomeAluno> {
         } else {
           turmasBD = snapshot.data!;
           return Scaffold(
-            backgroundColor: ThemeColors.background,
+            backgroundColor: Colors.white,
             appBar: AppBar(
-              backgroundColor: ThemeColors.grey,
+              backgroundColor: Color(0xFF005AAA),
               leading: IconButton(
-                icon: Image.asset('images/logout.png'),
+                icon: Icon(Icons.logout, color: Colors.white, size: 40),
                 onPressed: () {
                   _logout(context);
                 },
@@ -89,25 +89,31 @@ class _HomeAlunoState extends State<HomeAluno> {
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset('images/chapeu.png', width: 30),
-                  SizedBox(width: 10),
-                  Text('Turmas', style: TextStyle(color: ThemeColors.text)),
+                  Icon(Icons.list_alt, color: Colors.white, size: 30),
+                  SizedBox(width: 10),                 
+                  Padding(
+                    padding: EdgeInsets.only(right: 60), // Adiciona margem à esquerda do texto
+                    child: Text(
+                      'Turmas',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
                 ],
-              ),
+              ), 
             ),
             body: ListView.builder(
               itemCount: turmasBD.length,
               itemBuilder: (context, index) {
                 return Card(
-                  color: ThemeColors.formInput,
+                  color: Color(0xFFFbbc4e3),
                   child: ListTile(
                     title: Text(
                       '${turmasBD[index][0]}',
-                      style: TextStyle(color: ThemeColors.text),
+                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(
                       'Turma: ${turmasBD[index][1]}',
-                      style: TextStyle(color: ThemeColors.grey),
+                      style: TextStyle(color: Colors.black),
                     ),
                     onTap: () {
                       Navigator.push(

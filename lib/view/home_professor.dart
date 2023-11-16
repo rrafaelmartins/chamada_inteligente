@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:chamada_inteligente/view/login.dart';
 import 'package:chamada_inteligente/view/view_turma.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,6 @@ class HomeProfessor extends StatefulWidget {
   static String routeName = "/homeprofessor";
   final int id_professor;
   HomeProfessor({required this.id_professor});
-
 
   @override
   State<HomeProfessor> createState() => _HomeProfessorState(id_professor: id_professor);
@@ -31,38 +29,17 @@ class _HomeProfessorState extends State<HomeProfessor> {
     List<dynamic> responseData = json.decode(response.body);
     print("entrou");
     for (var turma in responseData) {
-      //print(turma);
       List temp = [];
       temp.add(turma[0]);
       temp.add(turma[1]);
       temp.add(turma[2]);
-      /*String strid = turma[2].toString();
-      temp.add(strid);
-      print(strid.runtimeType);*/
       turmasBD.add(temp);
     }
 
     return responseData;
   }
-
-  
-
-  final List<Map<String, String>> turmas = [
-    {
-      'codigo': 'TCC00293 - Engenharia de Software II',
-      'nome': 'Engenharia de Software II',
-      'turma': 'Turma A1 - 2023.2'
-    },
-    {
-      'codigo': 'TCC00339',
-      'nome': 'Gerência de Projetos e Manutenção de Software',
-      'turma': 'Turma A1 - 2023.2'
-    }
-    // ... Adicione mais turmas conforme necessário
-  ];
-
  
-  @override
+@override
 Widget build(BuildContext context) {
   return FutureBuilder<List<dynamic>>(
     future: _getTurmas(),
@@ -95,11 +72,11 @@ Widget build(BuildContext context) {
         } else {
           turmasBD = snapshot.data!;
           return Scaffold(
-            backgroundColor: ThemeColors.background,
+            backgroundColor: Colors.white,
             appBar: AppBar(
-              backgroundColor: ThemeColors.grey,
+              backgroundColor: Color(0xFF005AAA),
               leading: IconButton(
-                icon: Image.asset('images/logout.png'),
+                icon: Icon(Icons.logout, color: Colors.white, size: 40),
                 onPressed: () {
                   _logout(context);
                 },
@@ -107,25 +84,31 @@ Widget build(BuildContext context) {
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset('images/chapeu.png', width: 30),
-                  SizedBox(width: 10),
-                  Text('Turmas', style: TextStyle(color: ThemeColors.text)),
+                  Icon(Icons.list_alt, color: Colors.white, size: 30),
+                  SizedBox(width: 10),                 
+                  Padding(
+                    padding: EdgeInsets.only(right: 60), // Adiciona margem à esquerda do texto
+                    child: Text(
+                      'Turmas',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
                 ],
-              ),
+              ),              
             ),
             body: ListView.builder(
               itemCount: turmasBD.length,
               itemBuilder: (context, index) {
                 return Card(
-                  color: ThemeColors.formInput,
+                  color: Color(0xFFFbbc4e3),
                   child: ListTile(
                     title: Text(
                       '${turmasBD[index][0]}',
-                      style: TextStyle(color: ThemeColors.text),
+                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(
                       'Turma: ${turmasBD[index][1]}',
-                      style: TextStyle(color: ThemeColors.grey),
+                      style: TextStyle(color: Colors.black),
                     ),
                     onTap: () {
                       Navigator.push(

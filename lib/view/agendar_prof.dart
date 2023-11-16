@@ -13,17 +13,18 @@ class _AgendarProfScreenState extends State<AgendarProfScreen> {
   bool isCallActive = false;
   TimeOfDay startTime = TimeOfDay(hour: 7, minute: 0);
   TimeOfDay endTime = TimeOfDay(hour: 9, minute: 0);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: ThemeColors.appBar,
-        title: Text(
-          "Agendar Chamada",
-          style: TextStyle(color: Colors.white),
-        ),
-        actions: [
+        backgroundColor: Color(0xFF005AAA),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Agendar Chamada',
+              style: TextStyle(color: Colors.white),
+            ),
             Switch(
               value: isCallActive,
               onChanged: (value) {
@@ -31,16 +32,15 @@ class _AgendarProfScreenState extends State<AgendarProfScreen> {
                   isCallActive = value; // Atualiza o estado do switch
                 });
               },
+              activeColor: Colors.white, // Cor do botão do switch quando ativo
             ),
-        ],
+          ],
+        ),
       ),
       backgroundColor: ThemeColors.background,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
+      body: Column(
           children: <Widget>[
+            SizedBox(height: 100),
             Text(
               "Engenharia de Software II",
               style: TextStyle(
@@ -53,33 +53,36 @@ class _AgendarProfScreenState extends State<AgendarProfScreen> {
               "Turma A1",
               style: TextStyle(
                 fontSize: 16,
-                color: ThemeColors.grey,
+                color: Colors.black,
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             Text(
               "DIA:",
               style: TextStyle(
                 fontSize: 16,
                 color: ThemeColors.text,
+                fontWeight: FontWeight.bold,
               ),
             ),
             Text(
               "TER QUI",
               style: TextStyle(
                 fontSize: 16,
-                color: ThemeColors.grey,
+                color: Colors.black,
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             Text(
               "HORÁRIO:",
               style: TextStyle(
                 fontSize: 16,
                 color: ThemeColors.text,
+                fontWeight: FontWeight.bold,
               ),
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 InkWell(
                   onTap: () async {
@@ -97,11 +100,11 @@ class _AgendarProfScreenState extends State<AgendarProfScreen> {
                     "INÍCIO: ${startTime.format(context)}",
                     style: TextStyle(
                       fontSize: 16,
-                      color: ThemeColors.grey,
+                      color: Colors.black,
                     ),
                   ),
                 ),
-                SizedBox(width: 10),
+                SizedBox(width: 50),
                 InkWell(
                   onTap: () async {
                     TimeOfDay? selectedTime = await showTimePicker(
@@ -118,18 +121,18 @@ class _AgendarProfScreenState extends State<AgendarProfScreen> {
                     "FIM: ${endTime.format(context)}",
                     style: TextStyle(
                       fontSize: 16,
-                      color: ThemeColors.grey,
+                      color: Colors.black,
                     ),
                   ),
                 ),
               ],
             ),
-            Spacer(),
+            SizedBox(height: 60),
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: ThemeColors.purple,
-                  onPrimary: ThemeColors.background,
+                  primary: Color(0xFF005AAA),
+                  onPrimary: Colors.white,
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                 ),
                 onPressed: () {
@@ -143,7 +146,6 @@ class _AgendarProfScreenState extends State<AgendarProfScreen> {
             ),
           ],
         ),
-      ),
     );
   }
 }

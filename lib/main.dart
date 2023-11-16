@@ -9,8 +9,6 @@ import 'helper/database_helper.dart';
 
 final routes = {
   LoginPage.routeName: (BuildContext context) => const LoginPage(),
-  
-  
 };
 
 Future<void> main() async{

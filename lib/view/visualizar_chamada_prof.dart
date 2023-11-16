@@ -10,8 +10,8 @@ class VisualizarProf extends StatelessWidget {
   final String codTurma;
   final int id_turma;
   final int id_professor;
-  var date = DateFormat.yMMMEd().format(DateTime.now());
-
+  var date = DateFormat('dd/MM/yyyy').format(DateTime.now());
+  
   VisualizarProf({required this.turmaChamada, required this.codTurma, required this.id_turma, required this.id_professor});
   var env_url = dotenv.env['URL'];
   List<dynamic> alunos = [];
@@ -61,7 +61,7 @@ return FutureBuilder<List<dynamic>>(
         return Scaffold(
           backgroundColor: ThemeColors.background,
           appBar: AppBar(
-          title: Text('Visualizar Prof', style: TextStyle(color: ThemeColors.text)),
+          title: Text('Visualizar Chamada', style: TextStyle(color: ThemeColors.text)),
           backgroundColor: ThemeColors.appBar,
       ),
           body: Center(child: CircularProgressIndicator()),
@@ -74,8 +74,9 @@ return FutureBuilder<List<dynamic>>(
           return Scaffold(
             backgroundColor: ThemeColors.background,
             appBar: AppBar(
-            title: Text('Visualizar Prof', style: TextStyle(color: ThemeColors.text)),
-            backgroundColor: ThemeColors.appBar,
+            title: Text('Visualizar Chamada', style: TextStyle(color: Colors.white)),
+              backgroundColor: Color(0xFF005AAA),
+              centerTitle: true,
             ),
             body: SingleChildScrollView(
               child: Padding(
@@ -83,13 +84,79 @@ return FutureBuilder<List<dynamic>>(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('PROFESSOR: ${nomeprof}', style: TextStyle(fontSize: 14, color: ThemeColors.text)),
+                    Text('UNIVERSIDADE FEDERAL FLUMINENSE', style: TextStyle(fontSize: 14, color: ThemeColors.text, fontWeight: FontWeight.bold)),
                     SizedBox(height: 10),
-                    Text('DISCIPLINA: ' + turmaChamada, style: TextStyle(fontSize: 14, color: ThemeColors.text)),
+                    RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: ThemeColors.text,
+                        ),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: 'PROFESSOR: ',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold, // Define a palavra "PROFESSOR" em negrito
+                            ),
+                          ),   
+                          TextSpan(text: '${nomeprof}'),               
+                        ],
+                      ),
+                    ),
                     SizedBox(height: 10),
-                    Text('TURMA: ' + codTurma, style: TextStyle(fontSize: 14, color: ThemeColors.text)),
+                    RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: ThemeColors.text,
+                        ),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: 'DISCIPLINA: ',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold, // Define a palavra "DISCIPLINA" em negrito
+                            ),
+                          ),
+                          TextSpan(text: turmaChamada),
+                        ],
+                      ),
+                    ),
                     SizedBox(height: 10),
-                    Text('Data: ' + date, style: TextStyle(fontSize: 14, color: ThemeColors.text)),
+                    RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: ThemeColors.text,
+                        ),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: 'TURMA: ',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold, // Define a palavra "TURMA" em negrito
+                            ),
+                          ),
+                          TextSpan(text: codTurma),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: ThemeColors.text,
+                        ),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: 'DATA: ',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold, // Define a palavra "DATA" em negrito
+                            ),
+                          ),
+                          TextSpan(text: date),
+                        ],
+                      ),
+                    ),
                     SizedBox(height: 10),
 
                     // Tabela de chamada
@@ -98,19 +165,29 @@ return FutureBuilder<List<dynamic>>(
                       children: [
                         // Headers da tabela
                         TableRow(children: [
-                          Text('NOME', textAlign: TextAlign.center),
-                          Text('MATRÍCULA', textAlign: TextAlign.center),
-                          Text('PRESENÇA', textAlign: TextAlign.center),
-                          Text('JUSTIFICAR FALTA', textAlign: TextAlign.center),
+                          createTableCellTittle('NOME'),
+                          createTableCellTittle('MATRÍCULA'),
+                          createTableCellTittle('PRESENÇA'),
                         ]),
                         // Dados dos alunos
                         for (var aluno in alunos)
                           TableRow(children: [
-                            Text('${aluno[1]} ' + '${aluno[2]}', textAlign: TextAlign.center), // Substituir pelo nome do aluno vindo do banco de dados
-                            Text('${aluno[0]}', textAlign: TextAlign.center), // Substituir pela matrícula do aluno vinda do banco de dados
-                            Icon(Icons.close, color: Colors.red), // Use Icons.check para presença; Aqui ocorrerá a chamada ao BD
-                            Text('', textAlign: TextAlign.center), // Deixe em branco se não houver justificativa
-                          ]),
+                            TableCell(
+                              child: Center(child: Text('${aluno[1]} ' + '${aluno[2]}', textAlign: TextAlign.center)),
+                              verticalAlignment: TableCellVerticalAlignment.middle,
+                            ),
+                            TableCell(
+                              child: Center(child: Text('${aluno[0]}', textAlign: TextAlign.center)),
+                              verticalAlignment: TableCellVerticalAlignment.middle,
+                            ),
+                            TableCell(
+                              child: Center(
+                                child: Icon(Icons.check, color: Colors.green),
+                              ),
+                              verticalAlignment: TableCellVerticalAlignment.middle,
+                            ),
+                          ]
+                        ),
                       ],
                     )
                   ],
@@ -125,10 +202,12 @@ return FutureBuilder<List<dynamic>>(
 }
 }
 
-
-
-
-
+Widget createTableCellTittle(String text) {
+  return TableCell(
+    child: Center(child: Text(text, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold),)),
+    verticalAlignment: TableCellVerticalAlignment.middle,
+  );
+}
 
 /*
 

@@ -8,8 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-
-
 enum LoginStatus { notSignIn, signIn }
 
 class LoginPage extends StatefulWidget {
@@ -103,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Login"),
-        backgroundColor: ThemeColors.dark,
+        backgroundColor: Color(0xFF005AAA),
         centerTitle: true,
       ),
       backgroundColor: ThemeColors.background,
@@ -115,19 +113,23 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Image.asset('images/logo.png', height: 200),
+                  SizedBox(height: 20),
                   Form(
                     key: _formKey,
                     child: Column(children: [
                       FormInput(
-                          label: "Usuário",
+                          label: "Usuário:",
+                          textColor: Colors.black,
                           onChanged: (newValue) => matricula = newValue),
                       FormInput(
-                          label: "Senha",
+                          label: "Senha:",
+                          textColor: Colors.black,
                           obscureText: true,
                           onChanged: (newValue) => _password = newValue),
+                      SizedBox(height: 15),
                       DropdownButton<String>(
                         value: _selectedRole,
-                        hint: Text('Select Role'),
+                        hint: Text('Selecionar Tipo',style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
                         items: <String>['Aluno', 'Professor'].map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -145,13 +147,46 @@ class _LoginPageState extends State<LoginPage> {
                         child: ElevatedButton(
                           onPressed: _submit,
                           child: const Text("Login"),
-                        ),
+                          style: ElevatedButton.styleFrom(
+                          primary: Color(0xFF005AAA), // Alterando a cor do botão para vermelho
+                          // Outras propriedades do estilo do botão, se necessário
                       ),
-
+                      ),
+                    ),
                     ]),
                   ),
                 ]),
           ))),
+    );
+  }
+  
+}
+
+class FormInput extends StatelessWidget {
+  final String label;
+  final bool obscureText;
+  final ValueChanged<String>? onChanged;
+  final Color? textColor; // Adicionando a cor do texto como uma propriedade
+
+  const FormInput({
+    required this.label,
+    this.obscureText = false,
+    this.onChanged,
+    this.textColor, // Adicionando a cor do texto como um parâmetro opcional
+  });
+
+@override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      obscureText: obscureText,
+      onChanged: onChanged,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(
+          color: textColor,
+          fontWeight: FontWeight.bold, // Usando a cor definida ou padrão (preto)
+        ),
+      ),
     );
   }
 }

@@ -26,6 +26,8 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
     return Scaffold(
       appBar: AppBar(
         title: Text('${disciplina}: ${codTurma}'),
+        backgroundColor: Color(0xFF005AAA),
+        centerTitle: true,
       ),
       body: Center(
         child: Column(

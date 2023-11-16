@@ -18,7 +18,6 @@ conexao = mysql.connector.connect(
 )
 
 
-
 @professor_blueprint.route('/get_turmas_prof/<string:id_professor>', methods=['GET'])
 def get_turmas(id_professor: str):
     cursor = conexao.cursor()
@@ -79,22 +78,26 @@ def agendar_chamada():
     chamadas.professor_blueprintend({"start_time": start_time, "end_time": end_time})
     return jsonify({"status": "success", "message": "chamada agendada com sucesso"}), 200
 
-@professor_blueprint.route('/iniciar_chamada/<string:id_turma>/<string:localizacao>', methods=['POST'])
-def iniciar_chamada(id_turma: str, localizacao: str):
+
+@professor_blueprint.route('/iniciar_chamada/<string:id_turma>/', methods=['POST'])
+def iniciar_chamada(id_turma: str):
+    print("entrou")
     cursor = conexao.cursor()
+    localizacao = request.json.get('localizacao')
+    print(localizacao)
     comando = f"""INSERT INTO Aula (id_turma, localizacao, data_hora_inicio, situacao) VALUES
-                ({id_turma}, '{localizacao}', NOW(), 1),"""
+                ({id_turma}, "{localizacao}", NOW(), 1)"""
     cursor.execute(comando)
     conexao.commit()
     cursor.close()
     return jsonify({"status": "success", "message": "chamada started"}), 200
 
-@professor_blueprint.route('/terminar_chamada/<string:id_aula>', methods=['POST'])
-def finalizar_chamada(id_aula:str):
+@professor_blueprint.route('/finalizar_chamada/<string:id_turma>', methods=['POST'])
+def finalizar_chamada(id_turma:str):
     cursor = conexao.cursor()
-    comando = f"""UPDATE Aula
-                SET situacao = 0, data_hora_fim = NOW()
-                WHERE id_turma = {id_aula} AND situacao = 1;"""
+    comando = f"""UPDATE Aula 
+                SET situacao = 0, data_hora_fim = NOW() 
+                WHERE id_turma = {id_turma} AND situacao = 1;"""
     cursor.execute(comando)
     conexao.commit()
     cursor.close()
