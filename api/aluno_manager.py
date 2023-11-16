@@ -62,6 +62,41 @@ def confirmar_presenca(id_aluno:str, id_turma:str):
     return jsonify({"status": "success", "message": "presenca registrada"}), 200
 
 
+@aluno_blueprint.route('/get_nomeprof_by_turmaid/<string:id_turma>', methods=['GET']) #TO-DO: relacionar aluno à turma
+def get_nomeprof_by_turmaid(id_turma:str):
+    cursor = conexao.cursor()
+    comando = f"""SELECT Professor.primeiro_nome, Professor.segundo_nome
+                    FROM Turma
+                    JOIN Professor ON Turma.id_professor = Professor.id_professor
+                    WHERE Turma.id_turma = {id_turma};
+                    """
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    print(resultado)
+    cursor.close()
+    return jsonify(resultado), 200
+
+
+
+@aluno_blueprint.route('/get_historico_aluno/<string:id_turma>/<string:id_aluno>', methods=['GET'])
+def get_historico_aluno(id_turma: str, id_aluno: str):
+    cursor = conexao.cursor()
+    comando = f"""SELECT A.id_aula, 
+                DATE_FORMAT(A.data_hora_inicio, '%d/%m/%Y') AS data_aula,
+                CASE 
+                WHEN P.id_aluno IS NOT NULL THEN 'Presente'
+                ELSE 'Ausente'
+                END AS presenca
+                FROM Aula A
+                LEFT JOIN Presencas P ON A.id_aula = P.id_aula AND P.id_aluno = {id_aluno}
+                WHERE A.id_turma = {id_turma};
+                """
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    print(resultado)
+    cursor.close()
+    return jsonify(resultado), 200
+
 def consultaAluno(matricula, password):
     cursor = conexao.cursor()
     comando = f'SELECT * from aluno WHERE matricula = "{matricula}" AND senha = "{password}"'

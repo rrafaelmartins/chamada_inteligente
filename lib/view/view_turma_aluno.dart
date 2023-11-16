@@ -51,7 +51,7 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => HistoricoAluno(turmaChamada: disciplina.toUpperCase(), codTurma: codTurma.toUpperCase(),)),
+                  MaterialPageRoute(builder: (context) => HistoricoAluno(turmaChamada: disciplina.toUpperCase(), codTurma: codTurma.toUpperCase(), id_turma: id_turma, id_aluno: id_aluno)),
                 );
               },
               child: _buildRowWithIconAndText('relogio.png', "Histórico de chamadas"),
