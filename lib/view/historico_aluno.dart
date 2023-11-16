@@ -77,6 +77,8 @@ return FutureBuilder<List<dynamic>>(
           return Text('Erro: ${snapshot.error}');
         } else {
           presenca = snapshot.data!;
+          print("xereca broder");
+          print(presenca);
           return Scaffold(
             backgroundColor: ThemeColors.background,
             appBar: AppBar(
@@ -158,28 +160,29 @@ return FutureBuilder<List<dynamic>>(
                     createTableCellTittle('JUSTIFICAR FALTA'),
                   ]),
                   // for (var aluno in alunos) // Preencher de acordo com a quantidade de chamadas
-                  TableRow(children: [
-                    TableCell(
-                      child: Center(child: Text('${presenca[0][1]}', textAlign: TextAlign.center)), //DATA
-                      verticalAlignment: TableCellVerticalAlignment.middle,
-                    ),
-                    TableCell(
+                  for (var ocorrencia in presenca)
+                    TableRow(children: [
+                      TableCell(
+                        child: Center(child: Text('${ocorrencia[1]}', textAlign: TextAlign.center)), //DATA
+                        verticalAlignment: TableCellVerticalAlignment.middle,
+                      ),
+                      TableCell(
+                          child: Center(
+                            child: ocorrencia[2] == 'Presente'
+                              ? Icon(Icons.check, color: Colors.green)
+                              : Icon(Icons.close, color: Colors.red),
+                          ),
+                          verticalAlignment: TableCellVerticalAlignment.middle,
+                        ),
+                      TableCell(
                         child: Center(
-                          child: presenca[0][2] == 'Presente'
-                            ? Icon(Icons.check, color: Colors.green)
-                            : Icon(Icons.close, color: Colors.red),
+                          child: ocorrencia[2] == 'Presente'
+                            ? Center(child: Text('', textAlign: TextAlign.center))
+                            : Icon(Icons.medical_services_outlined, color: Colors.red),
                         ),
                         verticalAlignment: TableCellVerticalAlignment.middle,
                       ),
-                    TableCell(
-                      child: Center(
-                        child: presenca[0][2] == 'Presente'
-                          ? Center(child: Text('', textAlign: TextAlign.center))
-                          : Icon(Icons.medical_services_outlined, color: Colors.red),
-                      ),
-                      verticalAlignment: TableCellVerticalAlignment.middle,
-                    ),
-                  ]),
+                    ]),
                 ],
               )
                   ],
