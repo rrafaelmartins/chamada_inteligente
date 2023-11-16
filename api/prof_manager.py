@@ -43,7 +43,7 @@ def get_nomedisciplina_by_turmaid(id_turma: str):
     return jsonify(resultado), 200
 
 
-@professor_blueprint.route('/get_historico/<string:id_turma>', methods=['GET'])
+@professor_blueprint.route('/get_historico/<string:id_turma>', methods=['GET']) #MUDAR PARA GET_CHAMADA !!!!!!!!! NOME ERRADO !!!!!
 def get_historico(id_turma: str):
     cursor = conexao.cursor()
     comando = f"""SELECT Aluno.matricula, Aluno.primeiro_nome, Aluno.segundo_nome
@@ -56,6 +56,17 @@ def get_historico(id_turma: str):
     cursor.close()
     return jsonify(resultado), 200
 
+@professor_blueprint.route('/get_datas_historico_prof/<string:id_turma>', methods=['GET'])
+def get_datas_historico_prof(id_turma: str):
+    cursor = conexao.cursor()
+    comando = f"""SELECT DATE_FORMAT(data_hora_inicio, '%d/%m/%Y') AS data_inicio_formatada
+                FROM Aula
+                WHERE id_turma = {id_turma} AND data_hora_inicio <= NOW();"""
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    print(resultado)
+    cursor.close()
+    return jsonify(resultado), 200
 
 @professor_blueprint.route('/get_nome_prof/<string:id_prof>', methods=['GET'])
 def get_nome_prof(id_prof:str):

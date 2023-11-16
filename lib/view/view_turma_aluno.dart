@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:chamada_inteligente/view/historico_aluno.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
 
 class ViewTurmaAluno extends StatefulWidget {
   final String disciplina;
@@ -19,6 +23,23 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
   final String codTurma;
   final int id_turma;
   final int id_aluno;
+  String localizacao = "";
+  var env_url = dotenv.env['URL'];
+
+  Future<List<dynamic>> get_localizacao_chamada() async {
+    
+    var url = Uri.http('${env_url}', '/get_localizacao_chamada/$id_turma');
+    var response = await http.get(url);
+    List<dynamic> responseData = json.decode(response.body);
+
+    print(responseData);
+    if (responseData.length > 0){
+      localizacao = responseData[0][0];
+    }
+
+    return responseData;
+  }
+  
 
   _ViewTurmaAlunoState({required this.disciplina, required this.codTurma, required this.id_turma, required this.id_aluno});
   @override
@@ -32,11 +53,19 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('images/confirmar.png'), // Imagem 1
-            SizedBox(height: 50), // Espaço entre a primeira e a segunda imagem
+          children: <Widget>[
+            //Image.asset('images/confirmar.png'), // Imagem 1
+ 
 
-            Image.asset('images/presenca.png'), // Imagem 2
+                InkWell( // Adicionei o InkWell aqui
+                onTap: () {
+                  get_localizacao_chamada();
+                },
+                child: _buildRowWithIconAndText(Icons.check, "Confirmar Presença"),
+              ), // Espaço entre a primeira e a segunda imagem
+
+              SizedBox(height: 50), // Adicionei o InkWell aqui
+              _buildRowWithIconAndText(Icons.cell_tower, "Presença Automática"), 
 
             Switch(
               value: isSwitched,
@@ -54,7 +83,7 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
                   MaterialPageRoute(builder: (context) => HistoricoAluno(turmaChamada: disciplina.toUpperCase(), codTurma: codTurma.toUpperCase(), id_turma: id_turma, id_aluno: id_aluno)),
                 );
               },
-              child: _buildRowWithIconAndText('relogio.png', "Histórico de chamadas"),
+              child: _buildRowWithIconAndText(Icons.access_time, "Histórico de chamadas"),
             ),             
             ],
           ),
@@ -62,15 +91,11 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
     );
   }
 
-  Widget _buildRowWithIconAndText(String iconName, String text) {
+  Widget _buildRowWithIconAndText(IconData iconName, String text) {
     return Row(
       children: [
         SizedBox(width: 60), // Espaço à esquerda para deslocar
-        Image.asset(
-          'images/$iconName',
-          width: 50,
-          height: 50,
-        ),
+        Icon(iconName, color: Colors.black, size: 40),
         SizedBox(width: 10),
         Text(
           text,

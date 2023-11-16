@@ -1,7 +1,3 @@
-
-//IMPLEMENTAR HISTORICO E CONSEGUIR PEGAR NOME DO PROFESSOR DA DISCIPLINA
-
-
 import 'dart:convert';
 import 'package:chamada_inteligente/styles/theme_colors.dart';
 import 'package:flutter/material.dart';

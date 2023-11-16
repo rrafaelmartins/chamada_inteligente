@@ -97,6 +97,23 @@ def get_historico_aluno(id_turma: str, id_aluno: str):
     cursor.close()
     return jsonify(resultado), 200
 
+
+
+
+
+@aluno_blueprint.route('/get_localizacao_chamada/<string:id_turma>', methods=['GET'])
+def get_localizacao_aluno(id_turma: str):
+    cursor = conexao.cursor()
+    comando = f"""SELECT localizacao
+                    FROM Aula
+                    WHERE id_turma = {id_turma} AND situacao = 1;
+                """
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    print(resultado)
+    cursor.close()
+    return jsonify(resultado), 200
+
 def consultaAluno(matricula, password):
     cursor = conexao.cursor()
     comando = f'SELECT * from aluno WHERE matricula = "{matricula}" AND senha = "{password}"'

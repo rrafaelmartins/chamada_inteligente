@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:chamada_inteligente/view/agendar_prof.dart';
 import 'package:chamada_inteligente/view/historico_prof.dart';
 import 'package:chamada_inteligente/view/visualizar_chamada_prof.dart';
@@ -20,7 +19,6 @@ class TurmaPage extends StatelessWidget {
   TurmaPage({required this.disciplina, required this.codTurma, required this.id_turma, required this.id_professor});
 
 
-  //CONSERTAR
   Future<Map<String, dynamic>> _iniciarChamada(BuildContext context) async {
     var url = Uri.http('${env_url}', '/iniciar_chamada/${id_turma}/');
     localizacao = '-22.9256975,-43.2618122';
@@ -167,7 +165,7 @@ class TurmaPage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => HistoricoProfessor(turmaChamada: disciplina, codTurma: codTurma, id_professor: id_professor,)),
+                    MaterialPageRoute(builder: (context) => HistoricoProfessor(turmaChamada: disciplina, codTurma: codTurma, id_professor: id_professor, id_turma: id_turma)),
                   );
                 },
                 child: _buildRowWithIconAndText('relogio.png', "Histórico de chamadas"),
