@@ -28,7 +28,8 @@ def get_turmas_aluno(id_aluno:str):
     comando = f"""
     SELECT 
         Disciplina.nome, 
-        Turma.codigo_turma 
+        Turma.codigo_turma,
+        Turma.id_turma 
     FROM 
         Inscricao
     JOIN 
@@ -37,7 +38,6 @@ def get_turmas_aluno(id_aluno:str):
         Disciplina ON Turma.id_disciplina = Disciplina.id_disciplina
     WHERE 
         Inscricao.id_aluno = {id_aluno};
-
     """
     cursor.execute(comando)
     resultado = cursor.fetchall()
@@ -45,11 +45,21 @@ def get_turmas_aluno(id_aluno:str):
     cursor.close()
     return jsonify(resultado), 200
 
-@aluno_blueprint.route('/confirmar_presenca/<string:codigo_turma>', methods=['POST']) #TO-DO: relacionar aluno à turma
-def confirmar_presenca(codigo_turma):
-    presence_status = request.json.get('presence')
-    presencas[codigo_turma] = presence_status
-    return jsonify({"status": "success", "message": f"Presence for {codigo_turma} marked as {presence_status}"}), 200
+
+@aluno_blueprint.route('/confirmar_presenca/<string:id_aluno>/<string:id_turma>', methods=['POST']) #TO-DO: relacionar aluno à turma
+def confirmar_presenca(id_aluno:str, id_turma:str):
+    cursor = conexao.cursor()
+    comando = f"""INSERT INTO Presencas (id_aula, id_aluno, tempo_presenca)
+                SELECT A.id_aula, {id_aluno}, NOW()
+                FROM Aula A
+                INNER JOIN Inscricao I ON A.id_turma = I.id_turma
+                WHERE I.id_aluno = {id_aluno} AND A.id_turma = {id_turma} AND A.situacao = 1
+                ORDER BY A.data_hora_inicio ASC
+                LIMIT 1;"""
+    cursor.execute(comando)
+    conexao.commit()
+    cursor.close()
+    return jsonify({"status": "success", "message": "presenca registrada"}), 200
 
 
 def consultaAluno(matricula, password):
@@ -59,6 +69,3 @@ def consultaAluno(matricula, password):
     resultado = cursor.fetchall()
     cursor.close()
     return resultado
-
-if __name__ == '__main__':
-    app.run(debug=True)

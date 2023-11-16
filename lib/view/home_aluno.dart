@@ -36,6 +36,7 @@ class _HomeAlunoState extends State<HomeAluno> {
       List temp = [];
       temp.add(turma[0]);
       temp.add(turma[1]);
+      temp.add(turma[2]);
       turmasBD.add(temp);
     }
 
@@ -113,7 +114,7 @@ class _HomeAlunoState extends State<HomeAluno> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              ViewTurmaAluno(disciplina: turmasBD[index][0]!, codTurma: turmasBD[index][1]!,),
+                              ViewTurmaAluno(disciplina: turmasBD[index][0]!, codTurma: turmasBD[index][1]!, id_turma: turmasBD[index][2]!, id_aluno: id_aluno),
                         ),
                       );
                     },

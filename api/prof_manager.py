@@ -70,7 +70,7 @@ def get_nome_prof(id_prof:str):
     cursor.close()
     return jsonify(resultado), 200
 
-
+#TO-DO
 @professor_blueprint.route('/agendar_chamada', methods=['POST'])
 def agendar_chamada():
     # Apenas placeholders em lista
@@ -79,24 +79,27 @@ def agendar_chamada():
     chamadas.professor_blueprintend({"start_time": start_time, "end_time": end_time})
     return jsonify({"status": "success", "message": "chamada agendada com sucesso"}), 200
 
-@professor_blueprint.route('/iniciar_chamada/<int:chamada_id>', methods=['POST'])
-def iniciar_chamada(chamada_id):
-    # Apenas placeholders
-    if chamada_id < len(chamadas):
-        return jsonify({"status": "success", "message": "chamada started"}), 200
-    return jsonify({"status": "error", "message": "Invalid chamada ID"}), 404
+@professor_blueprint.route('/iniciar_chamada/<string:id_turma>/<string:localizacao>', methods=['POST'])
+def iniciar_chamada(id_turma: str, localizacao: str):
+    cursor = conexao.cursor()
+    comando = f"""INSERT INTO Aula (id_turma, localizacao, data_hora_inicio, situacao) VALUES
+                ({id_turma}, '{localizacao}', NOW(), 1),"""
+    cursor.execute(comando)
+    conexao.commit()
+    cursor.close()
+    return jsonify({"status": "success", "message": "chamada started"}), 200
 
-@professor_blueprint.route('/terminar_chamada/<int:chamada_id>', methods=['POST'])
-def terminar_chamada(chamada_id):
-    # Apenas placeholders
-    if chamada_id < len(chamadas):
-        del chamadas[chamada_id]
-        return jsonify({"status": "success", "message": "chamada ended"}), 200
-    return jsonify({"status": "error", "message": "Invalid chamada ID"}), 404
+@professor_blueprint.route('/terminar_chamada/<string:id_aula>', methods=['POST'])
+def finalizar_chamada(id_aula:str):
+    cursor = conexao.cursor()
+    comando = f"""UPDATE Aula
+                SET situacao = 0, data_hora_fim = NOW()
+                WHERE id_turma = {id_aula} AND situacao = 1;"""
+    cursor.execute(comando)
+    conexao.commit()
+    cursor.close()
+    return jsonify({"status": "success", "message": "chamada ended"}), 200
 
-@professor_blueprint.route('/historico_de_chamadas', methods=['GET'])
-def historico_de_chamadas():
-    return jsonify(chamadas), 200
 
 if __name__ == '__main__':
     professor_blueprint.run(debug=True)
