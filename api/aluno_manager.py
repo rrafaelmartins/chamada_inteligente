@@ -57,7 +57,7 @@ def get_turmas_aluno(id_aluno:str):
     return jsonify(resultado), 200
 
 
-@aluno_blueprint.route('/confirmar_presenca/<string:id_aluno>/<string:id_turma>', methods=['POST']) #TO-DO: relacionar aluno à turma
+@aluno_blueprint.route('/confirmar_presenca/<string:id_aluno>/<string:id_turma>', methods=['POST'])
 def confirmar_presenca(id_aluno:str, id_turma:str):
     conexao = open_conexao()
     cursor = conexao.cursor()
@@ -75,7 +75,7 @@ def confirmar_presenca(id_aluno:str, id_turma:str):
     return jsonify({"status": "success", "message": "presenca registrada"}), 200
 
 
-@aluno_blueprint.route('/get_nomeprof_by_turmaid/<string:id_turma>', methods=['GET']) #TO-DO: relacionar aluno à turma
+@aluno_blueprint.route('/get_nomeprof_by_turmaid/<string:id_turma>', methods=['GET'])
 def get_nomeprof_by_turmaid(id_turma:str):
     conexao = open_conexao()
     cursor = conexao.cursor()

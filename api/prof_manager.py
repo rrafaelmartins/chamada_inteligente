@@ -17,6 +17,14 @@ conexao = mysql.connector.connect(
     database='intelitestenovo'
 )
 
+def open_conexao():
+    conexao = mysql.connector.connect(
+    host='localhost',
+    user='root',
+    password=f'{password}',
+    database='intelitestenovo'
+)
+    return conexao
 
 @professor_blueprint.route('/get_turmas_prof/<string:id_professor>', methods=['GET'])
 def get_turmas(id_professor: str):
@@ -88,6 +96,27 @@ def agendar_chamada():
     end_time = request.json.get('end_time')
     chamadas.professor_blueprintend({"start_time": start_time, "end_time": end_time})
     return jsonify({"status": "success", "message": "chamada agendada com sucesso"}), 200
+
+
+@professor_blueprint.route('/visualizar_chamada/<string:id_turma>/', methods=['GET'])
+def visualizar_chamada(id_turma: str):
+    print("entrou")
+    cursor = conexao.cursor()
+    comando = f"""SELECT CONCAT(al.primeiro_nome, ' ', al.segundo_nome) as nome, al.matricula, COALESCE(p.id_presenca, 0) as id_presenca
+                FROM Aula a
+                INNER JOIN Turma t ON a.id_turma = t.id_turma
+                INNER JOIN Inscricao i ON t.id_turma = i.id_turma
+                INNER JOIN Aluno al ON i.id_aluno = al.id_aluno
+                LEFT JOIN Presencas p ON a.id_aula = p.id_aula AND al.id_aluno = p.id_aluno
+                WHERE t.id_turma = {id_turma}
+                AND a.situacao = 1 
+                ORDER BY al.id_aluno, a.id_aula;"""
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    print(resultado)
+    cursor.close()
+    return jsonify(resultado), 200
+
 
 
 @professor_blueprint.route('/iniciar_chamada/<string:id_turma>/', methods=['POST'])
