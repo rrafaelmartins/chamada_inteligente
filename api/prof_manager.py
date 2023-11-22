@@ -14,7 +14,7 @@ conexao = mysql.connector.connect(
     host='localhost',
     user='root',
     password=f'{password}',
-    database='chamadainteliteste'
+    database='intelitestenovo'
 )
 
 
