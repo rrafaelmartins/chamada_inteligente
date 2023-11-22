@@ -114,7 +114,7 @@ def check_open_chamadas(id_turma: str):
 
 
 @aluno_blueprint.route('/get_localizacao_chamada/<string:id_turma>', methods=['GET'])
-def get_localizacao_aluno(id_turma: str):
+def get_localizacao_chamada(id_turma: str):
     cursor = conexao.cursor()
     comando = f"""SELECT localizacao
                     FROM Aula

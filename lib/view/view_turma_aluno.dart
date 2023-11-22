@@ -213,7 +213,7 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
                 headers: {"Content-Type": "application/json"},
                 body: body,
               );
-              List<dynamic> responseData = json.decode(response.body);
+              //responseData = json.decode(response.body);
               print(response.statusCode);
                   if (response.statusCode == 200) {
                     _showSuccessDialog(context); // Chamando o diálogo de sucesso
