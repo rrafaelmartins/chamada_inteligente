@@ -129,6 +129,39 @@ def visualizar_chamada(id_turma: str):
     conexao.close()
     return jsonify(resultado), 200
 
+@professor_blueprint.route('/chamada_passada/<string:id_turma>/<string:data>', methods=['GET'])
+def chamada_passada(id_turma: str, data:str):
+    print("entrou")
+    #data = request.json.get('data')
+    conexao = open_conexao()
+    cursor = conexao.cursor()
+    comando = f"""SELECT 
+    CONCAT(al.primeiro_nome, ' ', al.segundo_nome) AS Aluno, 
+    al.matricula,
+    CASE 
+        WHEN p.id_aluno IS NOT NULL THEN 'Presente'
+        ELSE 'Ausente' 
+    END AS presenca
+FROM 
+    Aula a
+JOIN 
+    Turma t ON a.id_turma = t.id_turma
+JOIN 
+    Inscricao i ON t.id_turma = i.id_turma
+JOIN 
+    Aluno al ON i.id_aluno = al.id_aluno
+LEFT JOIN 
+    Presencas p ON a.id_aula = p.id_aula AND al.id_aluno = p.id_aluno
+WHERE 
+    a.id_turma = {id_turma} 
+    AND DATE(a.data_hora_inicio) = '{data}';"""
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    print(resultado)
+    cursor.close()
+    conexao.close()
+    return jsonify(resultado), 200
+
 
 
 @professor_blueprint.route('/iniciar_chamada/<string:id_turma>/', methods=['POST'])

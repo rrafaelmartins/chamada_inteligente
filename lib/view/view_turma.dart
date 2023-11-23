@@ -138,7 +138,7 @@ class TurmaPage extends StatelessWidget {
                 onTap: () {
                   _iniciarChamada(context);
                 },
-                child: _buildRowWithIconAndText('lista.png', "Iniciar chamada"),
+                child: _buildRowWithIconAndText(Icons.menu_book, "Iniciar chamada"),
               ),
               
               SizedBox(height: 40.0),
@@ -146,7 +146,7 @@ class TurmaPage extends StatelessWidget {
                 onTap: () {
                   _finalizarChamada(context);
                 },
-                child: _buildRowWithIconAndText('bandeira.png', "Finalizar chamada"),
+                child: _buildRowWithIconAndText(Icons.emoji_flags, "Finalizar chamada"),
               ),
               
               SizedBox(height: 40.0),
@@ -157,7 +157,7 @@ class TurmaPage extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => VisualizarProf(turmaChamada: disciplina.toUpperCase(), codTurma: codTurma.toUpperCase(), id_turma: id_turma, id_professor: this.id_professor)),
                   );
                 },
-                child: _buildRowWithIconAndText('olho.png', "Visualizar chamada"),
+                child: _buildRowWithIconAndText(Icons.remove_red_eye_outlined, "Visualizar chamada"),
               ),
               SizedBox(height: 40.0),
               InkWell( // Adicionei o InkWell aqui
@@ -167,7 +167,7 @@ class TurmaPage extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => AgendarProfScreen()),
                   );
                 },
-                child: _buildRowWithIconAndText('agenda.png', "Agendar chamada"),
+                child: _buildRowWithIconAndText(Icons.timer_sharp, "Agendar chamada"),
               ),
               SizedBox(height: 40.0),
                 InkWell( // Adicionei o InkWell aqui
@@ -177,22 +177,18 @@ class TurmaPage extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => HistoricoProfessor(turmaChamada: disciplina, codTurma: codTurma, id_professor: id_professor, id_turma: id_turma)),
                   );
                 },
-                child: _buildRowWithIconAndText('relogio.png', "Histórico de chamadas"),
+                child: _buildRowWithIconAndText(Icons.history, "Histórico de chamadas"),
               ),
             ],
           ),
     );
   }
 
-  Widget _buildRowWithIconAndText(String iconName, String text) {
+  Widget _buildRowWithIconAndText(IconData iconName, String text) {
     return Row(
       children: [
-        SizedBox(width: 70), // Espaço à esquerda para deslocar
-        Image.asset(
-          'images/$iconName',
-          width: 40,
-          height: 40,
-        ),
+        SizedBox(width: 60), // Espaço à esquerda para deslocar
+        Icon(iconName, color: Colors.black, size: 40),
         SizedBox(width: 10),
         Text(
           text,
