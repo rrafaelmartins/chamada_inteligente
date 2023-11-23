@@ -75,6 +75,28 @@ def confirmar_presenca(id_aluno:str, id_turma:str):
     return jsonify({"status": "success", "message": "presenca registrada"}), 200
 
 
+@aluno_blueprint.route('/verificar_presenca/<string:id_aluno>/<string:id_turma>', methods=['GET'])
+def verificar_presenca(id_aluno:str, id_turma:str):
+    conexao = open_conexao()
+    cursor = conexao.cursor()
+    comando = f"""
+    SELECT EXISTS (
+    SELECT 1 
+    FROM Presencas
+    INNER JOIN Aula ON Presencas.id_aula = Aula.id_aula
+    WHERE Aula.id_turma = {id_turma} 
+    AND Aula.situacao = 1 
+    AND Presencas.id_aluno = {id_aluno}
+    ) AS presenca_confirmada;
+    """
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    print(resultado)
+    cursor.close()
+    conexao.close()
+    return jsonify(resultado), 200
+
+
 @aluno_blueprint.route('/get_nomeprof_by_turmaid/<string:id_turma>', methods=['GET'])
 def get_nomeprof_by_turmaid(id_turma:str):
     conexao = open_conexao()

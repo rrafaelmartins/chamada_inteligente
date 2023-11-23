@@ -186,6 +186,10 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
 
   Future<List<dynamic>> confirmar_presenca(BuildContext context, Position _centerChamada) async {
 
+
+
+
+
     //consulta: existe chamada aberta dessa turma?
     var url = Uri.http('${env_url}', '/check_open_chamadas/$id_turma');
     var response = await http.get(url);
@@ -193,7 +197,21 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
     print("responseData: ");
     print(responseData);
 
+    
+
     if (responseData[0][0] == 1){
+
+      //consulta: esse aluno já confirmou presenca?
+      var url2 = Uri.http('${env_url}', '/verificar_presenca/$id_aluno/$id_turma');
+      var response2 = await http.get(url2);
+      List<dynamic> responseData2 = json.decode(response2.body);
+      print("responseData2: ${responseData2}" );
+
+      if (responseData2[0][0] == 1){
+        _showFailDialog(context, Text("Você já marcou presença."));
+        return responseData;
+      }
+
        bool flagCreateArea = await _createAreaChamada(_centerChamada);
        print("flagCreateArea valor: "+"$flagCreateArea");
        print("_centerChamada2 recebeu o seguinte: ");
@@ -219,39 +237,19 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
                     _showSuccessDialog(context); // Chamando o diálogo de sucesso
                   }
                   else{
-                    _showFailDialog(context);
+                    _showFailDialog(context, Text("Ocorreu um erro. Tente novamente"));
                   }
 
           }
           else{
           print("else");
-          _showFailDialog(context); //MUDAR PARA DIALOGBOX
+          _showFailDialog(context, Text("Você nãpo está na área da chamada. Tente novamente.")); //MUDAR PARA DIALOGBOX
         }
         }
         else{
-          _showFailDialog(context); //MUDAR PARA DIALOGBOX
+          _showFailDialog(context, Text("Ocorreu um erro.")); //MUDAR PARA DIALOGBOX
         }
        }
-       
-
-    //localizacao da chamada (latitude e longitude)
-    //_createAreaChamada();
-    //_centerChamada;
-
-
-    //localizacao do aluno
-    //aluno_position;
-
-    //criar uma area em volta dessa localizacao da chamada
-
-    //verificar se estou dentro da area
-    //_isAlunoInArea(_centerChamada!);
-
-    // 
-
-    /*var url = Uri.http('${env_url}', '/get_localizacao_chamada/$id_turma');
-    var response = await http.get(url);
-    List<dynamic> responseData = json.decode(response.body);*/
 
     return responseData;
   }
@@ -278,13 +276,13 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
     );
   }
 
-    void _showFailDialog(BuildContext context) {
+    void _showFailDialog(BuildContext context, Text texto) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Erro"),
-          content: Text("Tente novamente"),
+          content: texto,
           actions: <Widget>[
             TextButton(
               child: Text("OK"),

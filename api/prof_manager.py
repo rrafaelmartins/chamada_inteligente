@@ -28,17 +28,20 @@ def open_conexao():
 
 @professor_blueprint.route('/get_turmas_prof/<string:id_professor>', methods=['GET'])
 def get_turmas(id_professor: str):
+    conexao = open_conexao()
     cursor = conexao.cursor()
     comando = f'select nome, codigo_turma, id_turma FROM Disciplina JOIN Turma ON Turma.id_disciplina = Disciplina.id_disciplina WHERE id_professor = {id_professor}; '
     cursor.execute(comando)
     resultado = cursor.fetchall()
     print(resultado)
     cursor.close()
+    conexao.close()
     return jsonify(resultado), 200
 
 
 @professor_blueprint.route('/get_nomedisciplina_by_turmaid/<string:id_turma>', methods=['GET'])
 def get_nomedisciplina_by_turmaid(id_turma: str):
+    conexao = open_conexao()
     cursor = conexao.cursor()
     comando = f"""SELECT Disciplina.nome
                 FROM Turma
@@ -48,11 +51,13 @@ def get_nomedisciplina_by_turmaid(id_turma: str):
     resultado = cursor.fetchall()
     print(resultado)
     cursor.close()
+    conexao.close()
     return jsonify(resultado), 200
 
 
 @professor_blueprint.route('/get_historico/<string:id_turma>', methods=['GET']) #MUDAR PARA GET_CHAMADA !!!!!!!!! NOME ERRADO !!!!!
 def get_historico(id_turma: str):
+    conexao = open_conexao()
     cursor = conexao.cursor()
     comando = f"""SELECT Aluno.matricula, Aluno.primeiro_nome, Aluno.segundo_nome
                 FROM Inscricao
@@ -62,10 +67,12 @@ def get_historico(id_turma: str):
     resultado = cursor.fetchall()
     print(resultado)
     cursor.close()
+    conexao.close()
     return jsonify(resultado), 200
 
 @professor_blueprint.route('/get_datas_historico_prof/<string:id_turma>', methods=['GET'])
 def get_datas_historico_prof(id_turma: str):
+    conexao = open_conexao()
     cursor = conexao.cursor()
     comando = f"""SELECT DATE_FORMAT(data_hora_inicio, '%d/%m/%Y') AS data_inicio_formatada
                 FROM Aula
@@ -74,10 +81,12 @@ def get_datas_historico_prof(id_turma: str):
     resultado = cursor.fetchall()
     print(resultado)
     cursor.close()
+    conexao.close()
     return jsonify(resultado), 200
 
 @professor_blueprint.route('/get_nome_prof/<string:id_prof>', methods=['GET'])
 def get_nome_prof(id_prof:str):
+    conexao = open_conexao()
     cursor = conexao.cursor()
     comando = f"""SELECT CONCAT(primeiro_nome, ' ', segundo_nome) AS nome_completo_professor
                 FROM Professor
@@ -86,6 +95,7 @@ def get_nome_prof(id_prof:str):
     resultado = cursor.fetchall()
     print(resultado)
     cursor.close()
+    conexao.close()
     return jsonify(resultado), 200
 
 #TO-DO
@@ -101,6 +111,7 @@ def agendar_chamada():
 @professor_blueprint.route('/visualizar_chamada/<string:id_turma>/', methods=['GET'])
 def visualizar_chamada(id_turma: str):
     print("entrou")
+    conexao = open_conexao()
     cursor = conexao.cursor()
     comando = f"""SELECT CONCAT(al.primeiro_nome, ' ', al.segundo_nome) as nome, al.matricula, COALESCE(p.id_presenca, 0) as id_presenca
                 FROM Aula a
@@ -115,6 +126,7 @@ def visualizar_chamada(id_turma: str):
     resultado = cursor.fetchall()
     print(resultado)
     cursor.close()
+    conexao.close()
     return jsonify(resultado), 200
 
 
@@ -122,6 +134,7 @@ def visualizar_chamada(id_turma: str):
 @professor_blueprint.route('/iniciar_chamada/<string:id_turma>/', methods=['POST'])
 def iniciar_chamada(id_turma: str):
     print("entrou")
+    conexao = open_conexao()
     cursor = conexao.cursor()
     localizacao = request.json.get('localizacao')
     print(localizacao)
@@ -130,10 +143,12 @@ def iniciar_chamada(id_turma: str):
     cursor.execute(comando)
     conexao.commit()
     cursor.close()
+    conexao.close()
     return jsonify({"status": "success", "message": "chamada started"}), 200
 
 @professor_blueprint.route('/finalizar_chamada/<string:id_turma>', methods=['POST'])
 def finalizar_chamada(id_turma:str):
+    conexao = open_conexao()
     cursor = conexao.cursor()
     comando = f"""UPDATE Aula 
                 SET situacao = 0, data_hora_fim = NOW() 
@@ -141,6 +156,7 @@ def finalizar_chamada(id_turma:str):
     cursor.execute(comando)
     conexao.commit()
     cursor.close()
+    conexao.close()
     return jsonify({"status": "success", "message": "chamada ended"}), 200
 
 
