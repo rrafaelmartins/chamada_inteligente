@@ -21,6 +21,19 @@ class TurmaPage extends StatelessWidget {
 
 
   Future<Map<String, dynamic>> _iniciarChamada(BuildContext context) async {
+
+
+    print("ENTROU NESSA PORRA");
+    var url2 = Uri.http('${env_url}', '/check_open_chamadas/$id_turma');
+    var response2 = await http.get(url2);
+    List<dynamic> responseData2 = json.decode(response2.body);
+    print("responseData: ");
+    print(responseData2);
+
+    
+
+    if (responseData2[0][0] == 0){
+
     var url = Uri.http('${env_url}', '/iniciar_chamada/${id_turma}/');
 
     await Geolocator.requestPermission();
@@ -36,8 +49,8 @@ class TurmaPage extends StatelessWidget {
       'localizacao': localizacao,
     };
     var body = json.encode(data);
-  print(url);
-  var response = await http.post(url,
+    print(url);
+    var response = await http.post(url,
         headers: {"Content-Type": "application/json"},
         body: body,
     );
@@ -46,17 +59,33 @@ class TurmaPage extends StatelessWidget {
       _showSuccessDialog(context); // Chamando o diálogo de sucesso
     }
     else{
-      _showFailDialog(context);
+      _showFailDialog(context, Text("Ocorreu um erro. Tente novamente"));
     }
 
     Map<String, dynamic> responseData = json.decode(response.body);
     
     return responseData;
+    }
+    else{
+      _showFailDialog(context, Text("Já existe uma chamada em aberto"));
+    }
     
+    return {'status': 'chamada_nao_iniciada', 'data': responseData2};
   }
 
 
   Future<List<dynamic>> _finalizarChamada(BuildContext context) async {
+
+    print("ENTROU NESSA PORRA DE FINALIZAR");
+    var url2 = Uri.http('${env_url}', '/check_open_chamadas/$id_turma');
+    var response2 = await http.get(url2);
+    List<dynamic> responseData2 = json.decode(response2.body);
+    print("responseData: ");
+    print(responseData2);
+
+
+    if (responseData2[0][0] == 1){
+
     var url = Uri.http('${env_url}', '/finalizar_chamada/$id_turma');
 
     Map data = {
@@ -73,12 +102,17 @@ class TurmaPage extends StatelessWidget {
       _showSuccessDialog(context); // Chamando o diálogo de sucesso
     }
     else{
-      _showFailDialog(context);
+      _showFailDialog(context, Text("Ocorreu um erro. Tente novamente"));
     }
 
     List<dynamic> responseData = json.decode(response.body);
     
     return responseData;
+    }
+    else{
+      _showFailDialog(context, Text("Não existe chamada em aberto para fechar"));
+    }
+    return responseData2;
   }
 
   void _showSuccessDialog(BuildContext context) {
@@ -101,13 +135,13 @@ class TurmaPage extends StatelessWidget {
     );
   }
 
-    void _showFailDialog(BuildContext context) {
+    void _showFailDialog(BuildContext context, Text texto) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Erro"),
-          content: Text("Tente novamente"),
+          content: texto,
           actions: <Widget>[
             TextButton(
               child: Text("OK"),
@@ -120,7 +154,6 @@ class TurmaPage extends StatelessWidget {
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {

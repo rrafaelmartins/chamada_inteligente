@@ -243,7 +243,7 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
           }
           else{
           print("else");
-          _showFailDialog(context, Text("Você nãpo está na área da chamada. Tente novamente.")); //MUDAR PARA DIALOGBOX
+          _showFailDialog(context, Text("Você não está na área da chamada. Tente novamente.")); //MUDAR PARA DIALOGBOX
         }
         }
         else{
