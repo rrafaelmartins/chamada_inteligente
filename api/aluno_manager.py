@@ -154,6 +154,41 @@ def check_open_chamadas(id_turma: str):
     return jsonify(resultado), 200
 
 
+@aluno_blueprint.route('/estisticas_historico_aluno/<string:id_turma>/<string:id_aluno>', methods=['GET'])
+def estisticas_historico_aluno(id_turma: str, id_aluno: str):
+    conexao = open_conexao()
+    cursor = conexao.cursor()
+    comando = f"""
+
+SELECT 
+    (SELECT COUNT(*) FROM Aula WHERE id_turma = {id_turma}) AS Total_Aulas,
+    (SELECT COUNT(*) 
+     FROM Presencas AS P 
+     INNER JOIN Aula AS A ON P.id_aula = A.id_aula 
+     WHERE A.id_turma = {id_turma} AND P.id_aluno = {id_aluno}) AS Total_Presencas,
+    (SELECT COUNT(*) FROM Aula WHERE id_turma = {id_turma}) - 
+    (SELECT COUNT(*) 
+     FROM Presencas AS P 
+     INNER JOIN Aula AS A ON P.id_aula = A.id_aula 
+     WHERE A.id_turma = {id_turma} AND P.id_aluno = {id_aluno}) AS Total_Faltas,
+    ROUND(((
+        (SELECT COUNT(*) FROM Aula WHERE id_turma = {id_turma}) - 
+        (SELECT COUNT(*) 
+         FROM Presencas AS P 
+         INNER JOIN Aula AS A ON P.id_aula = A.id_aula 
+         WHERE A.id_turma = {id_turma} AND P.id_aluno = {id_aluno})
+    ) / (SELECT COUNT(*) FROM Aula WHERE id_turma = {id_turma})) * 100, 2) AS Percentual_Faltas
+
+
+"""
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    print(resultado)
+    cursor.close()
+    conexao.close()
+    return jsonify(resultado), 200
+
+
 @aluno_blueprint.route('/get_localizacao_chamada/<string:id_turma>', methods=['GET'])
 def get_localizacao_chamada(id_turma: str):
     conexao = open_conexao()

@@ -250,6 +250,9 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
           _showFailDialog(context, Text("Ocorreu um erro.")); //MUDAR PARA DIALOGBOX
         }
        }
+       else{
+          _showFailDialog(context, Text("Não existe chamada aberta dessa turma.")); //MUDAR PARA DIALOGBOX
+      }
 
     return responseData;
   }

@@ -11,195 +11,168 @@ class HistoricoAluno extends StatelessWidget {
   final int id_turma;
   final int id_aluno;
   String nomeprof = "";
-  var date = DateFormat.yMMMEd().format(DateTime.now());
 
   HistoricoAluno({required this.turmaChamada, required this.codTurma, required this.id_turma, required this.id_aluno});
   var env_url = dotenv.env['URL'];
   List<dynamic> presenca = [];
+  List<dynamic> estatisticas = [];
 
   Future<List<dynamic>> get_historico_aluno() async {
-    
     var url = Uri.http('${env_url}', '/get_historico_aluno/$id_turma/$id_aluno');
     var response = await http.get(url);
     List<dynamic> responseData = json.decode(response.body);
 
-    print("consulta 1:");
-    print(responseData);
     for (var alunos in responseData) {
       List temp = [];
       temp.add(alunos[1]);
       temp.add(alunos[2]);
       presenca.add(temp);
-      print(temp);
     }
 
-    print("aqui aqui");
-    print(presenca);
-    
-
+    //pegar nome prof
     var url2 = Uri.http('${env_url}', '/get_nomeprof_by_turmaid/$id_turma');
     var response2 = await http.get(url2);
     List<dynamic> responseData2 = json.decode(response2.body);
-
-    print("consulta 2:");
-    print(responseData2);
     nomeprof = '${responseData2[0][0]} ' + responseData2[0][1];
-    print(nomeprof);
-    
+
+    //pegar estatisticas
+    var url3 = Uri.http('${env_url}', '/estisticas_historico_aluno/$id_turma/$id_aluno');
+    var response3 = await http.get(url3);
+    List<dynamic> responseData3 = json.decode(response3.body);
+    for (var info in responseData3) {
+      List temp = [];
+      temp.add(info[0]); //quantidade de aulas
+      temp.add(info[1]); //quantidade de presenças
+      temp.add(info[2]); //quantidade de faltas
+      temp.add(info[3]); //pertentual de faltas
+      estatisticas.add(temp);
+    }
+    print(estatisticas);
+
     return responseData;
   }
 
-    /*Future<void>_getNome() async {
-    var url = Uri.http('${env_url}', '/get_nomeprof_by_turmaid/$id_turma');
-    var response = await http.get(url);
-    List<dynamic> responseData = json.decode(response.body);
-
-    nomeprof = responseData[0];
-  }*/
-
-
   @override
   Widget build(BuildContext context) {
-return FutureBuilder<List<dynamic>>(
-    future: get_historico_aluno(),
-    builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return Scaffold(
-          backgroundColor: ThemeColors.background,
-          appBar: AppBar(
-          title: Text('Visualizar Chamada', style: TextStyle(color: ThemeColors.text)),
-          backgroundColor: ThemeColors.appBar,
-      ),
-          body: Center(child: CircularProgressIndicator()),
-        );
-      } else {
-        if (snapshot.hasError) {
-          return Text('Erro: ${snapshot.error}');
-        } else {
-          presenca = snapshot.data!;
-          print("xereca broder");
-          print(presenca);
+    return FutureBuilder<List<dynamic>>(
+      future: get_historico_aluno(),
+      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             backgroundColor: ThemeColors.background,
             appBar: AppBar(
-            title: Text('Histórico de Chamadas', style: TextStyle(color: Colors.white)),
-              backgroundColor: Color(0xFF005AAA),
-              centerTitle: true,
+              title: Text('Visualizar Chamada', style: TextStyle(color: ThemeColors.text)),
+              backgroundColor: ThemeColors.appBar,
             ),
-            body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text('UNIVERSIDADE FEDERAL FLUMINENSE', style: TextStyle(fontSize: 14, color: ThemeColors.text, fontWeight: FontWeight.bold)),
-                    SizedBox(height: 10),
-                    RichText(
-                      text: TextSpan(
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: ThemeColors.text,
-                        ),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: 'PROFESSOR: ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold, // Define a palavra "PROFESSOR" em negrito
-                            ),
-                          ),   
-                          TextSpan(text: '${nomeprof}'),               
+            body: Center(child: CircularProgressIndicator()),
+          );
+        } else {
+          if (snapshot.hasError) {
+            return Text('Erro: ${snapshot.error}');
+          } else {
+            presenca = snapshot.data!;
+            return Scaffold(
+              backgroundColor: ThemeColors.background,
+              appBar: AppBar(
+                title: Text('Histórico de Chamadas', style: TextStyle(color: Colors.white)),
+                backgroundColor: Color(0xFF005AAA),
+                centerTitle: true,
+              ),
+              body: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('UNIVERSIDADE FEDERAL FLUMINENSE', style: TextStyle(fontSize: 14, color: ThemeColors.text, fontWeight: FontWeight.bold)),
+                      SizedBox(height: 10),
+                      createRichText('PROFESSOR:', nomeprof),
+                      SizedBox(height: 10),
+                      createRichText('DISCIPLINA:', turmaChamada),
+                      SizedBox(height: 10),
+                      createRichText('TURMA:', codTurma),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Alinha os elementos à esquerda e à direita
+                        children: [
+                          createRichText('Aulas:', "${estatisticas[0][0]}"),
+                          createRichText('Presenças:', "${estatisticas[0][1]}"),
+                          createRichText('Faltas:', "${estatisticas[0][2]}"),
+                          createRichText('Percentual de faltas:', "${estatisticas[0][3]}"),
                         ],
                       ),
-                    ),
-                    SizedBox(height: 10),
-                    RichText(
-                      text: TextSpan(
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: ThemeColors.text,
-                        ),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: 'DISCIPLINA: ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold, // Define a palavra "DISCIPLINA" em negrito
-                            ),
-                          ),
-                          TextSpan(text: turmaChamada),
+                      SizedBox(height: 10),
+                      // Tabela de chamada
+                      Table(
+                        border: TableBorder.all(color: Colors.grey, width: 1.0),
+                        children: [
+                          // Headers da tabela
+                          TableRow(children: [
+                            createTableCellTittle('DATA'),
+                            createTableCellTittle('PRESENTE'),
+                            createTableCellTittle('JUSTIFICAR FALTA'),
+                          ]),
+                          // Preencher de acordo com a quantidade de chamadas
+                          for (var ocorrencia in presenca)
+                            TableRow(children: [
+                              TableCell(
+                                child: Center(child: Text('${ocorrencia[1]}', textAlign: TextAlign.center)), //DATA
+                                verticalAlignment: TableCellVerticalAlignment.middle,
+                              ),
+                              TableCell(
+                                child: Center(
+                                  child: ocorrencia[2] == 'Presente'
+                                      ? Icon(Icons.check, color: Colors.green)
+                                      : Icon(Icons.close, color: Colors.red),
+                                ),
+                                verticalAlignment: TableCellVerticalAlignment.middle,
+                              ),
+                              TableCell(
+                                child: Center(
+                                  child: ocorrencia[2] == 'Presente'
+                                      ? Center(child: Text('', textAlign: TextAlign.center))
+                                      : Icon(Icons.medical_services_outlined, color: Colors.red),
+                                ),
+                                verticalAlignment: TableCellVerticalAlignment.middle,
+                              ),
+                            ]),
                         ],
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    RichText(
-                      text: TextSpan(
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: ThemeColors.text,
-                        ),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: 'TURMA: ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold, // Define a palavra "TURMA" em negrito
-                            ),
-                          ),
-                          TextSpan(text: codTurma),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 10),
-
-                    // Tabela de chamada
-                Table(
-                border: TableBorder.all(color: Colors.grey, width: 1.0),
-                children: [
-                  // Headers da tabela
-                  TableRow(children: [
-                    createTableCellTittle('DATA'),
-                    createTableCellTittle('PRESENTE'),
-                    createTableCellTittle('JUSTIFICAR FALTA'),
-                  ]),
-                  // for (var aluno in alunos) // Preencher de acordo com a quantidade de chamadas
-                  for (var ocorrencia in presenca)
-                    TableRow(children: [
-                      TableCell(
-                        child: Center(child: Text('${ocorrencia[1]}', textAlign: TextAlign.center)), //DATA
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                      ),
-                      TableCell(
-                          child: Center(
-                            child: ocorrencia[2] == 'Presente'
-                              ? Icon(Icons.check, color: Colors.green)
-                              : Icon(Icons.close, color: Colors.red),
-                          ),
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                        ),
-                      TableCell(
-                        child: Center(
-                          child: ocorrencia[2] == 'Presente'
-                            ? Center(child: Text('', textAlign: TextAlign.center))
-                            : Icon(Icons.medical_services_outlined, color: Colors.red),
-                        ),
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                      ),
-                    ]),
-                ],
-              )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
+            );
+          }
         }
-      }
-    },
-  );
-}
-}
+      },
+    );
+  }
 
-Widget createTableCellTittle(String text) {
-  return TableCell(
-    child: Center(child: Text(text, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold),)),
-    verticalAlignment: TableCellVerticalAlignment.middle,
-  );
+  Widget createRichText(String label, String value) {
+    return RichText(
+      text: TextSpan(
+        style: TextStyle(
+          fontSize: 14,
+          color: ThemeColors.text,
+        ),
+        children: <TextSpan>[
+          TextSpan(
+            text: '$label ',
+            style: TextStyle(
+              fontWeight: FontWeight.bold, // Define a palavra em negrito
+            ),
+          ),
+          TextSpan(text: '$value'),
+        ],
+      ),
+    );
+  }
+
+  Widget createTableCellTittle(String text) {
+    return TableCell(
+      child: Center(child: Text(text, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold))),
+      verticalAlignment: TableCellVerticalAlignment.middle,
+    );
+  }
 }
