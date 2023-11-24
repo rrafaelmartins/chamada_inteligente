@@ -3,6 +3,7 @@ import 'package:chamada_inteligente/styles/theme_colors.dart';
 import 'package:chamada_inteligente/view/agendar_prof.dart';
 import 'package:chamada_inteligente/view/historico_prof.dart';
 import 'package:chamada_inteligente/view/visualizar_chamada_prof.dart';
+import 'package:chamada_inteligente/view/estatisticas.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
@@ -253,7 +254,7 @@ class TurmaPage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,                                //chamar as estatisticas
-                    MaterialPageRoute(builder: (context) => HistoricoProfessor(turmaChamada: disciplina, codTurma: codTurma, id_professor: id_professor, id_turma: id_turma)),
+                    MaterialPageRoute(builder: (context) => Estatisticas(turmaChamada: disciplina, codTurma: codTurma, id_professor: id_professor, id_turma: id_turma)),
                   );
                 },
                 child: _buildRowWithIconAndText(Icons.query_stats, "Estatísticas da Turma"),
