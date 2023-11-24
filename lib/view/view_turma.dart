@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:chamada_inteligente/view/agendar_prof.dart';
+import 'package:chamada_inteligente/view/estatisticas.dart';
 import 'package:chamada_inteligente/view/historico_prof.dart';
 import 'package:chamada_inteligente/view/visualizar_chamada_prof.dart';
 import 'package:flutter/material.dart';
@@ -211,6 +212,16 @@ class TurmaPage extends StatelessWidget {
                   );
                 },
                 child: _buildRowWithIconAndText(Icons.history, "Histórico de chamadas"),
+              ),
+              SizedBox(height: 40.0),
+                InkWell( // Adicionei o InkWell aqui
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Estatisticas(turmaChamada: disciplina, codTurma: codTurma, id_professor: id_professor, id_turma: id_turma)),
+                  );
+                },
+                child: _buildRowWithIconAndText(Icons.query_stats, "Estatísticas da turma"),
               ),
             ],
           ),

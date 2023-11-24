@@ -36,7 +36,7 @@ class HistoricoAluno extends StatelessWidget {
     nomeprof = '${responseData2[0][0]} ' + responseData2[0][1];
 
     //pegar estatisticas
-    var url3 = Uri.http('${env_url}', '/estisticas_historico_aluno/$id_turma/$id_aluno');
+    var url3 = Uri.http('${env_url}', '/estatisticas_historico_aluno/$id_turma/$id_aluno');
     var response3 = await http.get(url3);
     List<dynamic> responseData3 = json.decode(response3.body);
     for (var info in responseData3) {

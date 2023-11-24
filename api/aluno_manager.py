@@ -154,8 +154,8 @@ def check_open_chamadas(id_turma: str):
     return jsonify(resultado), 200
 
 
-@aluno_blueprint.route('/estisticas_historico_aluno/<string:id_turma>/<string:id_aluno>', methods=['GET'])
-def estisticas_historico_aluno(id_turma: str, id_aluno: str):
+@aluno_blueprint.route('/estatisticas_historico_aluno/<string:id_turma>/<string:id_aluno>', methods=['GET'])
+def estatisticas_historico_aluno(id_turma: str, id_aluno: str):
     conexao = open_conexao()
     cursor = conexao.cursor()
     comando = f"""

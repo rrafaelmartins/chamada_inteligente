@@ -14,40 +14,41 @@ class HistoricoProfessor extends StatelessWidget {
   final int id_turma;
   String nomeprof = "";
   List<dynamic> datas = [];
+  List<dynamic> percentual = [];
 
   HistoricoProfessor({required this.turmaChamada, required this.codTurma, required this.id_professor, required this.id_turma});
   var env_url = dotenv.env['URL'];
 
     Future<List<dynamic>> get_historico_aluno() async {
     
+    //get historico
     var url = Uri.http('${env_url}', '/get_datas_historico_prof/$id_turma');
     var response = await http.get(url);
     List<dynamic> responseData = json.decode(response.body);
-
-    //print("consulta 1:");
-    //print(responseData);
     for (var registro in responseData) {
       List temp = [];
       temp.add(registro[0]);
       datas.add(temp);
-      print("temp:");
-      print(temp);
     }
-    print("responseData:");
-    print(responseData);
 
-    //print("aqui aqui");
-    //print(datas);
-    
+  
+    //get nomeprof
     var url2 = Uri.http('${env_url}', '/get_nomeprof_by_turmaid/$id_turma');
     var response2 = await http.get(url2);
     List<dynamic> responseData2 = json.decode(response2.body);
-
-    print("consulta 2:");
-    print(responseData2);
     nomeprof = '${responseData2[0][0]} ' + responseData2[0][1];
-    print(nomeprof);
-    
+
+
+    var url3 = Uri.http('${env_url}', '/get_percentual_presenca_turma/$id_turma');
+    var response3 = await http.get(url3);
+    List<dynamic> responseData3 = json.decode(response3.body);
+    for (var percent in responseData3) {
+      List temp = [];
+      temp.add(percent[0]);
+      percentual.add(temp);
+    }
+
+
     return responseData;
   }
 
@@ -70,8 +71,6 @@ return FutureBuilder<List<dynamic>>(
           return Text('Erro: ${snapshot.error}');
         } else {
           datas = snapshot.data!;
-          print("asdadsasd");
-          print(datas);
           return Scaffold(
             backgroundColor: ThemeColors.background,
             appBar: AppBar(
@@ -86,69 +85,21 @@ return FutureBuilder<List<dynamic>>(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text('UNIVERSIDADE FEDERAL FLUMINENSE', style: TextStyle(fontSize: 14, color: ThemeColors.text, fontWeight: FontWeight.bold)),
-                    SizedBox(height: 10),
-                    RichText(
-                      text: TextSpan(
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: ThemeColors.text,
-                        ),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: 'PROFESSOR: ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold, // Define a palavra "PROFESSOR" em negrito
-                            ),
-                          ),   
-                          TextSpan(text: '${nomeprof}'),               
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    RichText(
-                      text: TextSpan(
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: ThemeColors.text,
-                        ),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: 'DISCIPLINA: ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold, // Define a palavra "DISCIPLINA" em negrito
-                            ),
-                          ),
-                          TextSpan(text: turmaChamada),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    RichText(
-                      text: TextSpan(
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: ThemeColors.text,
-                        ),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: 'TURMA: ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold, // Define a palavra "TURMA" em negrito
-                            ),
-                          ),
-                          TextSpan(text: codTurma),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 10),
-
-                    // Tabela de chamada
+                      SizedBox(height: 10),
+                      createRichText('PROFESSOR:', nomeprof),
+                      SizedBox(height: 10),
+                      createRichText('DISCIPLINA:', turmaChamada),
+                      SizedBox(height: 10),
+                      createRichText('TURMA:', codTurma),
+                      SizedBox(height: 10),
                 Table(
                 border: TableBorder.all(color: Colors.grey, width: 1.0),
                 children: [
                   // Headers da tabela
-                  TableRow(children: [
+                  TableRow(
+                    children: [
                     createTableCellTittle('DATA'),
+                    createTableCellTittle('% DE PRESENÇA'),
                     createTableCellTittle('VISUALIZAR'),
                     createTableCellTittle('EXPORTAR'),
                   ]),
@@ -156,6 +107,10 @@ return FutureBuilder<List<dynamic>>(
                     TableRow(children: [
                       TableCell(
                         child: Center(child: Text('${data[0]}', textAlign: TextAlign.center)),
+                        verticalAlignment: TableCellVerticalAlignment.middle,
+                      ),
+                        TableCell(
+                        child: Center(child: Text('${percentual[0][0]}', textAlign: TextAlign.center)), //PERCENTUAL DE PRESENÇA
                         verticalAlignment: TableCellVerticalAlignment.middle,
                       ),
                       TableCell(
@@ -201,3 +156,23 @@ Widget createTableCellTittle(String text) {
     verticalAlignment: TableCellVerticalAlignment.middle,
   );
 }
+
+  Widget createRichText(String label, String value) {
+    return RichText(
+      text: TextSpan(
+        style: TextStyle(
+          fontSize: 14,
+          color: ThemeColors.text,
+        ),
+        children: <TextSpan>[
+          TextSpan(
+            text: '$label ',
+            style: TextStyle(
+              fontWeight: FontWeight.bold, // Define a palavra em negrito
+            ),
+          ),
+          TextSpan(text: '$value'),
+        ],
+      ),
+    );
+  }
