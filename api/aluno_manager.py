@@ -96,8 +96,8 @@ def get_nome_matricula_aluno(id_aluno: str):
 def confirmar_presenca(id_aluno:str, id_turma:str):
     conexao = open_conexao()
     cursor = conexao.cursor()
-    comando = f"""INSERT INTO Presencas (id_aula, id_aluno, tempo_presenca)
-                SELECT A.id_aula, {id_aluno}, NOW()
+    comando = f"""INSERT INTO Presencas (id_aula, id_aluno)
+                SELECT A.id_aula, {id_aluno}
                 FROM Aula A
                 INNER JOIN Inscricao I ON A.id_turma = I.id_turma
                 WHERE I.id_aluno = {id_aluno} AND A.id_turma = {id_turma} AND A.situacao = 1
@@ -140,6 +140,32 @@ def get_nomeprof_by_turmaid(id_turma:str):
                     """
     cursor.execute(comando)
     resultado = cursor.fetchall()
+    cursor.close()
+    conexao.close()
+    return jsonify(resultado), 200
+
+
+@aluno_blueprint.route('/get_switch/<string:id_aluno>', methods=['GET'])
+def get_switch(id_aluno:str):
+    conexao = open_conexao()
+    cursor = conexao.cursor()
+    comando = f"""select switch from aluno where id_aluno = {id_aluno};"""
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    cursor.close()
+    conexao.close()
+    return jsonify(resultado), 200
+
+@aluno_blueprint.route('/update_switch/<string:id_aluno>', methods=['PUT'])
+def update_switch(id_aluno:str):
+    conexao = open_conexao()
+    cursor = conexao.cursor()
+    comando = f"""UPDATE Aluno
+        SET switch = NOT switch
+        WHERE id_aluno = {id_aluno};"""
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    conexao.commit()
     cursor.close()
     conexao.close()
     return jsonify(resultado), 200

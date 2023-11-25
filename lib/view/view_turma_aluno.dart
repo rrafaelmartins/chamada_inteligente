@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:chamada_inteligente/styles/theme_colors.dart';
 import 'package:chamada_inteligente/view/historico_aluno.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -12,15 +13,23 @@ class ViewTurmaAluno extends StatefulWidget {
   final String nome_aluno;
   final int id_turma;
   final int id_aluno;
+  final bool isSwitched;
 
-  ViewTurmaAluno({required this.disciplina, required this.codTurma, required this.id_turma, required this.id_aluno, required this.nome_aluno, required this.matricula_aluno});
+  ViewTurmaAluno({required this.disciplina, required this.codTurma, required this.id_turma, required this.id_aluno, required this.nome_aluno, required this.matricula_aluno, required this.isSwitched});
 
   @override
   State<ViewTurmaAluno> createState() => _ViewTurmaAlunoState(disciplina: disciplina, codTurma: codTurma, id_turma: id_turma, id_aluno: id_aluno, nome_aluno: nome_aluno, matricula_aluno: matricula_aluno);
 }
 
+//banco de dados deve pegar o valor do switch
+//na home, deve verificar se (por função assincrona):
+  //1- existe chamada; 
+  //2- o aluno está dentro da area;
+
+
 class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
-  bool isSwitched = false; // Estado do Switch
+   _ViewTurmaAlunoState({required this.disciplina, required this.codTurma, required this.id_turma, required this.id_aluno, required this.nome_aluno, required this.matricula_aluno});
+  bool isSwitched2= false; // Estado do Switch
   final String disciplina;
   final String codTurma;
   final int id_turma;
@@ -46,6 +55,29 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
   Position? _centerChamada2;
   Position? aluno_position;
   var env_url = dotenv.env['URL'];
+
+  Future<List<dynamic>> get_switch() async {
+    var url9 = Uri.http('${env_url}', '/get_switch/$id_aluno');
+    var response9 = await http.get(url9);
+    List<dynamic> responseData9 = json.decode(response9.body);
+    if (responseData9[0][0] == 1){
+      isSwitched2 = true;
+    }
+    else{
+      isSwitched2 = false;
+    }
+    return responseData9;
+  }
+
+
+  void update_switch() async {
+
+    var url = Uri.http('${env_url}', '/update_switch/$id_aluno');
+    var response = await http.put(url);
+  }
+
+
+
 
   Future<List<dynamic>> get_localizacao_chamada() async {
     
@@ -141,7 +173,7 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
 
       if (responseData2[0][0] == 1){
         _showFailDialog(context, Text("Você já marcou presença."));
-        return responseData;
+        return responseData2;
       }
 
        bool flagCreateArea = await _createAreaChamada(_centerChamada);
@@ -220,15 +252,31 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
     );
   }
 
-  _ViewTurmaAlunoState({required this.disciplina, required this.codTurma, required this.id_turma, required this.id_aluno, required this.nome_aluno, required this.matricula_aluno});
-  @override
+ 
+@override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('${disciplina}: ${codTurma}'),
-        backgroundColor: Color(0xFF005AAA),
-        centerTitle: true,
-      ),
+return FutureBuilder<List<dynamic>>(
+    future: get_switch(),
+    builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            backgroundColor: Color(0xFF005AAA),
+          ),
+          body: Center(child: CircularProgressIndicator()),
+        );
+      } else {
+        if (snapshot.hasError) {
+          return Text('Erro: ${snapshot.error}');
+        } else {
+          return Scaffold(
+            backgroundColor: ThemeColors.background,
+            appBar: AppBar(
+            title: Text('Histórico de Chamadas', style: TextStyle(color: Colors.white)),
+              backgroundColor: Color(0xFF005AAA),
+              centerTitle: true,
+            ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -243,10 +291,11 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
               SizedBox(height: 50), // Adicionei o InkWell aqui
               _buildRowWithIconAndText(Icons.cell_tower, "Presença Automática"), 
             Switch(
-              value: isSwitched,
+              value: isSwitched2,
               onChanged: (value) {
                 setState(() {
-                  isSwitched = value; // Atualiza o estado do switch
+                  update_switch();
+                  isSwitched2 = value; // Atualiza o estado do switch
                 });
               },
             ),
@@ -290,6 +339,8 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
           ),
         ),
       );
+    }}
+      });
     }
 
   Widget _buildRowWithIconAndText(IconData iconName, String text) {

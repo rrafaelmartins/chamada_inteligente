@@ -81,11 +81,10 @@ def create_presenca_aluno(id_turma: str, matricula: str):
     conexao = open_conexao()
     cursor = conexao.cursor()
     comando = f"""
-            INSERT INTO Presencas (id_aula, id_aluno, tempo_presenca)
+            INSERT INTO Presencas (id_aula, id_aluno)
 SELECT 
     (SELECT id_aula FROM Aula WHERE id_turma = {id_turma} ORDER BY data_hora_inicio DESC LIMIT 1), 
-    (SELECT id_aluno FROM Aluno WHERE matricula = {matricula}),
-    '00:00:00';
+    (SELECT id_aluno FROM Aluno WHERE matricula = {matricula});
                 """
     cursor.execute(comando)
     conexao.commit()
