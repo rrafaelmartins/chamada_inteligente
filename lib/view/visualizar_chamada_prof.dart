@@ -5,20 +5,34 @@ import 'package:intl/intl.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
-class VisualizarProf extends StatelessWidget {
+class VisualizarProf extends StatefulWidget {
+  static String routeName = "/homealuno";
+  final String turmaChamada;
+  final String codTurma;
+  final int id_turma;
+  final int id_professor;
+  VisualizarProf({required this.id_turma, required this.id_professor, required this.codTurma, required this.turmaChamada});
+
+  @override
+  State<VisualizarProf> createState() => _VisualizarProfState(id_professor: id_professor, id_turma: id_turma, turmaChamada: turmaChamada, codTurma: codTurma);
+}
+
+
+class _VisualizarProfState extends State<VisualizarProf> {
   final String turmaChamada;
   final String codTurma;
   final int id_turma;
   final int id_professor;
   var date = DateFormat('dd/MM/yyyy').format(DateTime.now());
   
-  VisualizarProf({required this.turmaChamada, required this.codTurma, required this.id_turma, required this.id_professor});
+  _VisualizarProfState({required this.turmaChamada, required this.codTurma, required this.id_turma, required this.id_professor});
   var env_url = dotenv.env['URL'];
   List<dynamic> alunos = [];
   String nomedisciplina = "";
   String nomeprof = "";
   String nome_professor = "";
   String matricula_professor = "";
+  int temppresenca = 0;
 
     Future<List<dynamic>> visualizar_chamada() async {
     
@@ -45,8 +59,40 @@ class VisualizarProf extends StatelessWidget {
     nome_professor = responseData8[0][0];
     matricula_professor = "${responseData8[0][1]}";
 
+
+
+
     return responseData;
   }
+
+   void togglePresencaAluno(String matricula, int presenca, int id_turma, int indexAluno) async {
+
+      if (presenca == 0){
+        //fazer chamada para criar presenca
+        var url10 = Uri.http('${env_url}', '/create_presenca_aluno/$id_turma/$matricula');
+        var response10 = await http.post(url10);
+        //List<dynamic> responseData10 = json.decode(response10.body);
+        if(response10.statusCode == 200){
+            setState(() {
+              alunos[indexAluno][2] = presenca == 0 ? 1 : 0; // Atualiza a presença do aluno específico
+            });
+        }
+      }
+      else{
+        //fazer query para retirar presenca
+        var url12 = Uri.http('${env_url}', '/delete_presenca_aluno/$id_turma/$matricula');
+        var response12 = await http.delete(url12);
+        //List<dynamic> responseData10 = json.decode(response10.body);
+        if(response12.statusCode == 200){
+              setState(() {
+              alunos[indexAluno][2] = presenca == 0 ? 1 : 0; // Atualiza a presença do aluno específico
+            });
+        }
+      }
+
+      visualizar_chamada();
+
+   }
 
 
   @override
@@ -166,21 +212,24 @@ return FutureBuilder<List<dynamic>>(
                           createTableCellTittle('PRESENÇA'),
                         ]),
                         // Dados dos alunos
-                        for (var aluno in alunos)
+                        for (var i = 0; i < alunos.length; i++)
                           TableRow(children: [
                             TableCell(
-                              child: Center(child: Text('${aluno[0]}', textAlign: TextAlign.center)),
+                              child: Center(child: Text('${alunos[i][0]}', textAlign: TextAlign.center)),
                               verticalAlignment: TableCellVerticalAlignment.middle,
                             ),
                             TableCell(
-                              child: Center(child: Text('${aluno[1]}', textAlign: TextAlign.center)),
+                              child: Center(child: Text('${alunos[i][1]}', textAlign: TextAlign.center)),
                               verticalAlignment: TableCellVerticalAlignment.middle,
                             ),
                             TableCell(
-                              child: Center(
-                                child: aluno[2] != 0
-                                  ? Center(child: Icon(Icons.check, color: Colors.green))
-                                  : Icon(Icons.close, color: Colors.red),
+                              child: GestureDetector(
+                                onTap: () => togglePresencaAluno('${alunos[i][1]}', alunos[i][2], id_turma, i),
+                                child: Center(
+                                  child: (alunos[i][2]  != 0)
+                                    ? Icon(Icons.check, color: Colors.green)
+                                    : Icon(Icons.close, color: Colors.red),
+                                ),
                               ),
                               verticalAlignment: TableCellVerticalAlignment.middle,
                             ),

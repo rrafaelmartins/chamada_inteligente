@@ -75,6 +75,45 @@ def get_datas_historico_prof(id_turma: str):
     conexao.close()
     return jsonify(resultado), 200
 
+
+@professor_blueprint.route('/create_presenca_aluno/<string:id_turma>/<string:matricula>', methods=['POST'])
+def create_presenca_aluno(id_turma: str, matricula: str):
+    conexao = open_conexao()
+    cursor = conexao.cursor()
+    comando = f"""
+            INSERT INTO Presencas (id_aula, id_aluno, tempo_presenca)
+SELECT 
+    (SELECT id_aula FROM Aula WHERE id_turma = {id_turma} ORDER BY data_hora_inicio DESC LIMIT 1), 
+    (SELECT id_aluno FROM Aluno WHERE matricula = {matricula}),
+    '00:00:00';
+                """
+    cursor.execute(comando)
+    conexao.commit()
+    cursor.close()
+    conexao.close()
+    return jsonify({"status": "success", "message": "presenca criada"}), 200
+   
+@professor_blueprint.route('/delete_presenca_aluno/<string:id_turma>/<string:matricula>', methods=['DELETE'])
+def delete_presenca_aluno(id_turma: str, matricula: str):
+    conexao = open_conexao()
+    cursor = conexao.cursor()
+    comando = f"""
+            DELETE FROM Presencas
+            WHERE 
+            id_aluno = (SELECT id_aluno FROM Aluno WHERE matricula = {matricula}) AND
+            id_aula = (SELECT id_aula FROM Aula WHERE id_turma = {id_turma} AND situacao = 1 ORDER BY data_hora_inicio DESC LIMIT 1);
+                """
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    print(resultado)
+    conexao.commit()
+    cursor.close()
+    conexao.close()
+    return jsonify({"status": "success", "message": "presenca retirada"}), 200
+   
+
+
+
 @professor_blueprint.route('/get_nome_prof/<string:id_prof>', methods=['GET'])
 def get_nome_prof(id_prof:str):
     conexao = open_conexao()
