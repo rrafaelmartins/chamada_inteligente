@@ -111,7 +111,45 @@ def delete_presenca_aluno(id_turma: str, matricula: str):
     conexao.close()
     return jsonify({"status": "success", "message": "presenca retirada"}), 200
    
+@professor_blueprint.route('/export_chamada/<string:id_turma>/<string:data>', methods=['GET'])
+def export_chamada(id_turma: str, data: str):
+    conexao = open_conexao()
+    cursor = conexao.cursor()
+    comando = f"""
 
+        SELECT 
+    CONCAT(al.primeiro_nome, ' ', al.segundo_nome) AS Aluno, 
+    al.matricula,
+    CASE 
+        WHEN p.id_aluno IS NOT NULL THEN 'Presente'
+        ELSE 'Ausente' 
+        END AS presenca
+        INTO OUTFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/{data}.csv'
+        FIELDS TERMINATED BY ','
+        ENCLOSED BY '"'
+        LINES TERMINATED BY '\n'
+        FROM 
+            Aula a
+        JOIN 
+            Turma t ON a.id_turma = t.id_turma
+        JOIN 
+            Inscricao i ON t.id_turma = i.id_turma
+        JOIN 
+            Aluno al ON i.id_aluno = al.id_aluno
+        LEFT JOIN 
+            Presencas p ON a.id_aula = p.id_aula AND al.id_aluno = p.id_aluno
+        WHERE 
+            a.id_turma = {id_turma} 
+            AND DATE(a.data_hora_inicio) = '{data}';
+
+        """
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    print(resultado)
+    conexao.commit()
+    cursor.close()
+    conexao.close()
+    return jsonify({"status": "success", "message": "arquivo exportado para /MySQL/MySQL Server 8.0/Uploads"}), 200
 
 
 @professor_blueprint.route('/get_nome_prof/<string:id_prof>', methods=['GET'])

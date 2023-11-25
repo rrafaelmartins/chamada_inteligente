@@ -62,6 +62,25 @@ class HistoricoProfessor extends StatelessWidget {
     return responseData;
   }
 
+  void export_chamada(BuildContext context, String data) async {
+
+    //Esta não é a forma optimal. Deveria verificar qual o caminho adequado de cada dispositivo, mas não foi possível.
+
+    DateTime dataObjeto = DateFormat("dd/MM/yyyy").parse(data);
+    String dataFormatada = DateFormat("yyyy-MM-dd").format(dataObjeto);
+    print(dataFormatada);
+    var url12 = Uri.http('${env_url}', '/export_chamada/$id_turma/$dataFormatada');
+    var response12 = await http.get(url12);
+
+    if (response12.statusCode == 200){
+      _showChamadaDialog(context, Text("Chamada exportada com sucesso!"));
+    }
+    else{
+      _showChamadaDialog(context, Text("Ocorreu um erro. Tente novamente!"));
+    }
+
+    }
+
 @override
   Widget build(BuildContext context) {
 return FutureBuilder<List<dynamic>>(
@@ -141,7 +160,12 @@ return FutureBuilder<List<dynamic>>(
                         verticalAlignment: TableCellVerticalAlignment.middle,
                       ),
                       TableCell(
-                        child: Icon(Icons.download_sharp, color: Colors.blue),
+                        child: GestureDetector(
+                          onTap: () {
+                            export_chamada(context, data[0]);
+                          },
+                          child: Icon(Icons.download_sharp, color: Colors.black),
+                        ),
                         verticalAlignment: TableCellVerticalAlignment.middle,
                       ),
                     ]),
@@ -197,5 +221,25 @@ Widget createTableCellTittle(String text) {
           TextSpan(text: '$value'),
         ],
       ),
+    );
+  }
+
+   void _showChamadaDialog(BuildContext context, Text texto) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Chamada"),
+          content: texto,
+          actions: <Widget>[
+            TextButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop(); // Fecha o diálogo
+              },
+            ),
+          ],
+        );
+      },
     );
   }
