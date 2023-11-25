@@ -26,8 +26,20 @@ class _HomeAlunoState extends State<HomeAluno> {
   List<dynamic> turmasBD = [];
   String nome_aluno = "";
   String matricula_aluno = "";
+  
 
   Future<List<dynamic>> _getTurmas() async {
+
+    var url5 = Uri.http('${env_url}', '/check_open_chamadas_home/$id_aluno');
+    var response5 = await http.get(url5);
+    List<dynamic> responseData5 = json.decode(response5.body);
+
+    if (responseData5[0] != null){
+      String nometurma = responseData5[0][1];
+      _showChamadaDialog(context, Text("Existe uma chamada em aberto de: ${nometurma}!"));
+    }
+
+
     var url = Uri.http('${env_url}', '/get_turmas_aluno/$id_aluno');
     var response = await http.get(url);
     List<dynamic> responseData = json.decode(response.body);
@@ -39,6 +51,7 @@ class _HomeAlunoState extends State<HomeAluno> {
       temp.add(turma[2]);
       turmasBD.add(temp);
     }
+    
 
     var url2 = Uri.http('${env_url}', '/get_nome_matricula_aluno/$id_aluno');
     var response2 = await http.get(url2);
@@ -165,3 +178,23 @@ void _logout(BuildContext context) async {
   );
 }
 }
+
+  void _showChamadaDialog(BuildContext context, Text texto) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Chamada"),
+          content: texto,
+          actions: <Widget>[
+            TextButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop(); // Fecha o diálogo
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }

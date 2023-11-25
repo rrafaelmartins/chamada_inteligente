@@ -131,6 +131,7 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
     var url = Uri.http('${env_url}', '/check_open_chamadas/$id_turma');
     var response = await http.get(url);
     List<dynamic> responseData = json.decode(response.body);
+    
 
     if (responseData[0][0] == 1){
       //consulta: esse aluno já confirmou presenca?

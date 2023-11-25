@@ -179,6 +179,22 @@ def check_open_chamadas(id_turma: str):
     conexao.close()
     return jsonify(resultado), 200
 
+@aluno_blueprint.route('/check_open_chamadas_home/<string:id_aluno>', methods=['GET'])
+def check_open_chamadas_home(id_aluno: str):
+    conexao = open_conexao()
+    cursor = conexao.cursor()
+    comando = f"""SELECT A.id_turma, D.nome AS nome_disciplina
+FROM Aula A
+INNER JOIN Turma T ON A.id_turma = T.id_turma
+INNER JOIN Inscricao I ON T.id_turma = I.id_turma
+INNER JOIN Disciplina D ON T.id_disciplina = D.id_disciplina
+WHERE I.id_aluno = {id_aluno} AND A.situacao = 1;"""
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    cursor.close()
+    conexao.close()
+    return jsonify(resultado), 200
+
 @aluno_blueprint.route('/get_localizacao_chamada/<string:id_turma>', methods=['GET'])
 def get_localizacao_chamada(id_turma: str):
     conexao = open_conexao()
