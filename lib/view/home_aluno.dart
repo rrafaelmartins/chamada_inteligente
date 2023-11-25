@@ -33,8 +33,9 @@ class _HomeAlunoState extends State<HomeAluno> {
     var url5 = Uri.http('${env_url}', '/check_open_chamadas_home/$id_aluno');
     var response5 = await http.get(url5);
     List<dynamic> responseData5 = json.decode(response5.body);
-
-    if (responseData5[0] != null){
+    print(responseData5);
+    //print(responseData5[0]);
+    if (responseData5.isNotEmpty){
       String nometurma = responseData5[0][1];
       _showChamadaDialog(context, Text("Existe uma chamada em aberto de: ${nometurma}!"));
     }
