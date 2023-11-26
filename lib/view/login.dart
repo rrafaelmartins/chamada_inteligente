@@ -34,6 +34,9 @@ class _LoginPageState extends State<LoginPage> {
     else if (_selectedRole == "Professor"){
       url = Uri.http('${env_url}', '/LoginProfessor');
     }
+    else if (_selectedRole == null) {
+      _showFailDialog(context, "Selecione um Tipo!");
+    }
 
     Map data = {
       'matricula': matricula,
@@ -68,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
     } else{
-        _showFailDialog(context, "Login Inválido!\n\nVerifique Usuário e Senha!");
+      _showFailDialog(context, "Login Inválido!\n\nVerifique Usuário e Senha!");
     }
   }
 
