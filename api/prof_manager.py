@@ -284,19 +284,25 @@ def get_percentual_presenca_turma(id_turma: str):
     conexao = open_conexao()
     cursor = conexao.cursor()
     comando = f"""SELECT 
-    ROUND(COUNT(p.id_presenca) * 100.0 / COUNT(i.id_aluno), 2) AS Percentual_Presença
+    CASE 
+        WHEN COUNT(i.id_aluno) > 0 THEN 
+            ROUND(COUNT(p.id_presenca) * 100.0 / COUNT(i.id_aluno), 2) 
+        ELSE 
+            0 
+    END AS Percentual_Presença
 FROM 
     Aula a
 INNER JOIN 
     Turma t ON a.id_turma = t.id_turma
-INNER JOIN 
+LEFT JOIN 
     Inscricao i ON t.id_turma = i.id_turma
 LEFT JOIN 
     Presencas p ON a.id_aula = p.id_aula AND i.id_aluno = p.id_aluno
 WHERE 
     a.id_turma = {id_turma}
 GROUP BY 
-    a.id_aula;"""
+    a.id_aula
+"""
     cursor.execute(comando)
     resultado = cursor.fetchall()
     cursor.close()

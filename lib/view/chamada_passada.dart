@@ -184,7 +184,6 @@ Widget createTableCell(String text) {
   );
 }
 
-
 Widget buildText({
   required String text,
   double fontSize = 14,
