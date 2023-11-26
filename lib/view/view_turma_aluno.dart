@@ -190,7 +190,7 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
       }
       }
       else{
-        _showFailDialog(context, "Text(""Não existe chamada aberta dessa turma!");
+        _showFailDialog(context, "Não existe chamada aberta dessa turma!");
     }
 
     return responseData;
@@ -216,7 +216,7 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
             return Scaffold(
               backgroundColor: ThemeColors.background,
               appBar: AppBar(
-                title: buildText(text: 'Histórico de Chamadas', fontSize: 20, color: Colors.white, isBold: false),
+                title: buildText(text: '${disciplina}', fontSize: 20, color: Colors.white, isBold: false),
                 backgroundColor: Color(0xFF005AAA),
                 centerTitle: true,
               ),

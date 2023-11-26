@@ -66,7 +66,7 @@ def get_historico(id_turma: str):
 def get_datas_historico_prof(id_turma: str):
     conexao = open_conexao()
     cursor = conexao.cursor()
-    comando = f"""SELECT DATE_FORMAT(data_hora_inicio, '%d/%m/%Y') AS data_inicio_formatada
+    comando = f"""SELECT DATE_FORMAT(data_hora_inicio, '%d/%m/%Y') AS data_inicio_formatada, id_aula
                 FROM Aula
                 WHERE id_turma = {id_turma} AND data_hora_inicio <= NOW();"""
     cursor.execute(comando)
@@ -222,8 +222,8 @@ def visualizar_chamada(id_turma: str):
     conexao.close()
     return jsonify(resultado), 200
 
-@professor_blueprint.route('/chamada_passada/<string:id_turma>/<string:data>', methods=['GET'])
-def chamada_passada(id_turma: str, data:str):
+@professor_blueprint.route('/chamada_passada/<string:id_turma>/<string:id_aula>', methods=['GET'])
+def chamada_passada(id_turma: str, id_aula:str):
     conexao = open_conexao()
     cursor = conexao.cursor()
     comando = f"""SELECT 
@@ -245,7 +245,7 @@ LEFT JOIN
     Presencas p ON a.id_aula = p.id_aula AND al.id_aluno = p.id_aluno
 WHERE 
     a.id_turma = {id_turma} 
-    AND DATE(a.data_hora_inicio) = '{data}';"""
+    AND a.id_aula = {id_aula};"""
     cursor.execute(comando)
     resultado = cursor.fetchall()
     cursor.close()

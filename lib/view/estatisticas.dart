@@ -156,7 +156,7 @@ Widget createTableCellTittle(String text) {
   return TableCell(
     child: Container(
       height: 40,
-      child: Center(child: Text(text, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13))),
+      child: Center(child: Text(text, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10))),
     ),
     verticalAlignment: TableCellVerticalAlignment.middle,
   );
@@ -166,7 +166,7 @@ Widget createTableCell(String text) {
   return TableCell(
     child: Container(
       height: 35,
-      child: Center(child: Text(text, textAlign: TextAlign.center)),
+      child: Center(child: Text(text, textAlign: TextAlign.center, style: TextStyle(fontSize: 12))),
     ),
     verticalAlignment: TableCellVerticalAlignment.middle,
   );

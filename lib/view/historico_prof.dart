@@ -31,6 +31,7 @@ class HistoricoProfessor extends StatelessWidget {
     for (var registro in responseData) {
       List temp = [];
       temp.add(registro[0]);
+      temp.add(registro[1]);
       datas.add(temp);
     }
 
@@ -52,6 +53,7 @@ class HistoricoProfessor extends StatelessWidget {
       List temp = [];
       temp.add(datas[i][0]);
       temp.add(percentual[i][0]);
+      temp.add(datas[i][1]);
       resultado.add(temp);
     }
 
@@ -151,6 +153,7 @@ class HistoricoProfessor extends StatelessWidget {
                                       id_turma: id_turma,
                                       id_professor: this.id_professor,
                                       data: result[0],
+                                      id_aula: result[2],
                                     )),
                                   );
                                 },
@@ -199,7 +202,7 @@ class HistoricoProfessor extends StatelessWidget {
 Widget createTableCellTittle(String text) {
   return TableCell(
     child: Container(
-      height: 20,
+      height: 35,
       child: Center(child: Text(text, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13))),
     ),
     verticalAlignment: TableCellVerticalAlignment.middle,

@@ -186,10 +186,13 @@ Widget createRichText(String label, String value) {
 }
 
 Widget createTableCellTittle(String text) {
-    return TableCell(
-      child: Center(child: Text(text, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold))),
-      verticalAlignment: TableCellVerticalAlignment.middle,
-    );
+  return TableCell(
+    child: Container(
+      height: 20,
+      child: Center(child: Text(text, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13))),
+    ),
+    verticalAlignment: TableCellVerticalAlignment.middle,
+  );
 }
 
 Widget buildText({

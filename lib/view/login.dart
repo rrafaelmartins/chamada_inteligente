@@ -3,7 +3,6 @@ import 'package:chamada_inteligente/view/home_aluno.dart';
 import 'package:chamada_inteligente/view/home_professor.dart';
 import 'package:chamada_inteligente/styles/theme_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 

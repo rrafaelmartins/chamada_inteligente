@@ -11,8 +11,9 @@ class ChamadaPassada extends StatelessWidget {
   final int id_turma;
   final int id_professor;
   final String data;
+  final int id_aula;
 
-  ChamadaPassada({required this.turmaChamada, required this.codTurma, required this.id_turma, required this.id_professor, required this.data});
+  ChamadaPassada({required this.turmaChamada, required this.codTurma, required this.id_turma, required this.id_professor, required this.data, required this.id_aula});
   var env_url = dotenv.env['URL'];
   List<dynamic> alunos = [];
   List<dynamic> alunos_chamada = [];
@@ -32,11 +33,8 @@ class ChamadaPassada extends StatelessWidget {
       'data': '$data',
     };
     var body = json.encode(payload);
-
-    DateTime dataObjeto = DateFormat("dd/MM/yyyy").parse(data);
-    String dataFormatada = DateFormat("yyyy-MM-dd").format(dataObjeto);
     
-    var url3 = Uri.http('${env_url}', '/chamada_passada/$id_turma/$dataFormatada');
+    var url3 = Uri.http('${env_url}', '/chamada_passada/$id_turma/$id_aula');
     var response3 = await http.get(url3);
 
     List<dynamic> responseData3 = json.decode(response3.body);
