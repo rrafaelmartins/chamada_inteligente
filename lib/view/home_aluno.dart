@@ -203,7 +203,6 @@ class _HomeAlunoState extends State<HomeAluno> {
       List<dynamic> responseData2 = json.decode(response2.body);
 
       if (responseData2[0][0] == 1){
-        _showFailDialog(context, Text("Você já marcou presença."));
         return responseData;
       }
 
