@@ -31,151 +31,135 @@ class _AgendarProfScreenState extends State<AgendarProfScreen> {
     return responseData8;
   }
 
-@override
-Widget build(BuildContext context) {
-  return FutureBuilder<List<dynamic>>(
-    future: get_nome_matricula_professor(),
-    builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            backgroundColor: Color(0xFF005AAA),
-          ),
-          body: Center(child: CircularProgressIndicator()),
-        );
-      } else {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<dynamic>>(
+      future: get_nome_matricula_professor(),
+      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
-            title: Text('Agendar Chamada', style: TextStyle(color: Colors.white)),
+              backgroundColor: Color(0xFF005AAA),
+            ),
+            body: Center(child: CircularProgressIndicator()),
+          );
+        } else {
+          return Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              title: buildText(text: 'Agendar Chamada', fontSize: 20, color: Colors.white, isBold: false),
               backgroundColor: Color(0xFF005AAA),
               centerTitle: true,
             ),
-      body: Column(
-          children: <Widget>[
-            SizedBox(height: 100),
-            Text(
-              "Engenharia de Software II",
-              style: TextStyle(
-                fontSize: 18,
-                color: ThemeColors.text,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              "Turma A1",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-              ),
-            ),
-            SizedBox(height: 30),
-            Text(
-              "DIA:",
-              style: TextStyle(
-                fontSize: 16,
-                color: ThemeColors.text,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              "TER QUI",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-              ),
-            ),
-            SizedBox(height: 30),
-            Text(
-              "HORÁRIO:",
-              style: TextStyle(
-                fontSize: 16,
-                color: ThemeColors.text,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                InkWell(
-                  onTap: () async {
-                    TimeOfDay? selectedTime = await showTimePicker(
-                      context: context,
-                      initialTime: startTime,
-                    );
-                    if (selectedTime != null && selectedTime != startTime) {
-                      setState(() {
-                        startTime = selectedTime;
-                      });
-                    }
-                  },
-                  child: Text(
-                    "INÍCIO: ${startTime.format(context)}",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
+            body: Column(
+              children: <Widget>[
+                SizedBox(height: 100),
+                buildInfoText("Engenharia de Software II", bold: true),
+                buildInfoText("Turma A1", bold: true),
+                SizedBox(height: 30),
+                buildInfoText("DIA:", bold: true),
+                buildInfoText("TER , QUI"),
+                SizedBox(height: 30),
+                buildInfoText("HORÁRIO:", bold: true),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    InkWell(
+                      onTap: () async {
+                        TimeOfDay? selectedTime = await showTimePicker(
+                          context: context,
+                          initialTime: startTime,
+                        );
+                        if (selectedTime != null && selectedTime != startTime) {
+                          setState(() {
+                            startTime = selectedTime;
+                          });
+                        }
+                      },
+                      child: buildText(text: "INÍCIO: ${startTime.format(context)}", fontSize: 16, color: Colors.black, isBold: false),
                     ),
-                  ),
+                    SizedBox(width: 30),
+                    InkWell(
+                      onTap: () async {
+                        TimeOfDay? selectedTime = await showTimePicker(
+                          context: context,
+                          initialTime: endTime,
+                        );
+                        if (selectedTime != null && selectedTime != endTime) {
+                          setState(() {
+                            endTime = selectedTime;
+                          });
+                        }
+                      },
+                      child: buildText(text: "FIM: ${endTime.format(context)}", fontSize: 16, color: Colors.black, isBold: false),
+                    ),
+                  ],
                 ),
-                SizedBox(width: 50),
-                InkWell(
-                  onTap: () async {
-                    TimeOfDay? selectedTime = await showTimePicker(
-                      context: context,
-                      initialTime: endTime,
-                    );
-                    if (selectedTime != null && selectedTime != endTime) {
-                      setState(() {
-                        endTime = selectedTime;
-                      });
-                    }
-                  },
-                  child: Text(
-                    "FIM: ${endTime.format(context)}",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
+                SizedBox(height: 30),
+                Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(0xFF005AAA),
+                      onPrimary: Colors.white,
+                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                     ),
+                    onPressed: () {
+                      // Implementar ação do botão
+                    },
+                    child: buildText(text: "Salvar Alterações", fontSize: 18, color: Colors.white, isBold: false),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 60),
-            Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: Color(0xFF005AAA),
-                  onPrimary: Colors.white,
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                ),
-                onPressed: () {
-                  // Implementar ação do botão
-                },
-                child: Text(
-                  "Salvar Alterações",
-                  style: TextStyle(fontSize: 18),
+            bottomNavigationBar: BottomAppBar(
+              child: Container(
+                color: Color(0xFF005AAA),
+                height: 30.0,
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    buildText(text: 'Professor: ${nome_professor}', fontSize: 16, color: Colors.white, isBold: false),
+                    buildText(text: 'Matrícula: ${matricula_professor}', fontSize: 16, color: Colors.white, isBold: false),
+                  ],
                 ),
               ),
             ),
-          ],
-        ),
-        bottomNavigationBar: BottomAppBar(
-        child: Container(
-          color: Color(0xFF005AAA),
-          height: 30.0,
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text('Professor: ${nome_professor}',style: TextStyle(color: Colors.white,fontSize: 16.0),),
-              Text('Matrícula: ${matricula_professor}',style: TextStyle(color: Colors.white,fontSize: 16.0),),
-            ],
-          ),
-        ),
-      ),
+          );
+        }
+      },
     );
   }
-});
 }
+
+Widget buildInfoText(String label, {bool bold = false}) {
+  return Column(
+    children: [
+      Text(
+        label,
+        style: TextStyle(
+          fontSize: 16,
+          color: bold ? ThemeColors.text : Colors.black,
+          fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+        ),
+      ),
+    ],
+  );
+}
+
+Widget buildText({
+  required String text,
+  double fontSize = 14,
+  Color color = Colors.black,
+  bool isBold = false,
+}) {
+  return Text(
+    text,
+    style: TextStyle(
+      fontSize: fontSize,
+      color: color,
+      fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+    ),
+  );
 }

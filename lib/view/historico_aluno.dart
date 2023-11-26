@@ -30,25 +30,24 @@ class HistoricoAluno extends StatelessWidget {
       presenca.add(temp);
     }
 
-    //pegar nome prof
     var url2 = Uri.http('${env_url}', '/get_nomeprof_by_turmaid/$id_turma');
     var response2 = await http.get(url2);
     List<dynamic> responseData2 = json.decode(response2.body);
     nomeprof = '${responseData2[0][0]} ' + responseData2[0][1];
 
-    //pegar estatisticas
     var url3 = Uri.http('${env_url}', '/estatisticas_historico_aluno/$id_turma/$id_aluno');
     var response3 = await http.get(url3);
     List<dynamic> responseData3 = json.decode(response3.body);
     for (var info in responseData3) {
       List temp = [];
-      temp.add(info[0]); //quantidade de aulas
-      temp.add(info[1]); //quantidade de presenças
-      temp.add(info[2]); //quantidade de faltas
-      temp.add(info[3]); //pertentual de faltas
+      temp.add(info[0]);
+      temp.add(info[1]);
+      temp.add(info[2]);
+      temp.add(info[3]);
+      print(info[3]);
       estatisticas.add(temp);
     }
-
+  
     return responseData;
   }
 
@@ -73,7 +72,7 @@ class HistoricoAluno extends StatelessWidget {
             return Scaffold(
               backgroundColor: ThemeColors.background,
               appBar: AppBar(
-                title: Text('Histórico de Chamadas', style: TextStyle(color: Colors.white)),
+                title: buildText(text: 'Histórico de Chamadas', fontSize: 20, color: Colors.white, isBold: false),
                 backgroundColor: Color(0xFF005AAA),
                 centerTitle: true,
               ),
@@ -83,7 +82,7 @@ class HistoricoAluno extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('UNIVERSIDADE FEDERAL FLUMINENSE', style: TextStyle(fontSize: 14, color: ThemeColors.text, fontWeight: FontWeight.bold)),
+                      buildText(text: 'UNIVERSIDADE FEDERAL FLUMINENSE', fontSize: 14, color: ThemeColors.text, isBold: true),
                       SizedBox(height: 10),
                       createRichText('PROFESSOR:', nomeprof),
                       SizedBox(height: 10),
@@ -92,49 +91,53 @@ class HistoricoAluno extends StatelessWidget {
                       createRichText('TURMA:', codTurma),
                       SizedBox(height: 10),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Alinha os elementos à esquerda e à direita
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           createRichText('Aulas:', "${estatisticas[0][0]}"),
                           createRichText('Presenças:', "${estatisticas[0][1]}"),
                           createRichText('Faltas:', "${estatisticas[0][2]}"),
-                          createRichText('Percentual de faltas:', "${estatisticas[0][3]}"),
+                          TableCell(
+                            child: Center(
+                              child: estatisticas[0][3] == null
+                                  ? createRichText('Percentual de faltas:', "0.00%")
+                                  : createRichText('Percentual de faltas:', "${estatisticas[0][3]}%"),
+                            ),
+                            verticalAlignment: TableCellVerticalAlignment.middle,
+                          ),
                         ],
                       ),
                       SizedBox(height: 10),
-                      // Tabela de chamada
                       Table(
                         border: TableBorder.all(color: Colors.grey, width: 1.0),
                         children: [
-                          // Headers da tabela
                           TableRow(children: [
                             createTableCellTittle('DATA'),
                             createTableCellTittle('PRESENTE'),
                             createTableCellTittle('JUSTIFICAR FALTA'),
                           ]),
-                          // Preencher de acordo com a quantidade de chamadas
                           for (var ocorrencia in presenca)
-                            TableRow(children: [
-                              TableCell(
-                                child: Center(child: Text('${ocorrencia[1]}', textAlign: TextAlign.center)), //DATA
-                                verticalAlignment: TableCellVerticalAlignment.middle,
+                          TableRow(children: [
+                            TableCell(
+                              child: Center(child: Text('${ocorrencia[1]}', textAlign: TextAlign.center)),
+                              verticalAlignment: TableCellVerticalAlignment.middle,
+                            ),
+                            TableCell(
+                              child: Center(
+                                child: ocorrencia[2] == 'Presente'
+                                    ? Icon(Icons.check, color: Colors.green)
+                                    : Icon(Icons.close, color: Colors.red),
                               ),
-                              TableCell(
-                                child: Center(
-                                  child: ocorrencia[2] == 'Presente'
-                                      ? Icon(Icons.check, color: Colors.green)
-                                      : Icon(Icons.close, color: Colors.red),
-                                ),
-                                verticalAlignment: TableCellVerticalAlignment.middle,
+                              verticalAlignment: TableCellVerticalAlignment.middle,
+                            ),
+                            TableCell(
+                              child: Center(
+                                child: ocorrencia[2] == 'Presente'
+                                    ? Center(child: Text('', textAlign: TextAlign.center))
+                                    : Icon(Icons.medical_services_outlined, color: Colors.red),
                               ),
-                              TableCell(
-                                child: Center(
-                                  child: ocorrencia[2] == 'Presente'
-                                      ? Center(child: Text('', textAlign: TextAlign.center))
-                                      : Icon(Icons.medical_services_outlined, color: Colors.red),
-                                ),
-                                verticalAlignment: TableCellVerticalAlignment.middle,
-                              ),
-                            ]),
+                              verticalAlignment: TableCellVerticalAlignment.middle,
+                            ),
+                          ]),
                         ],
                       )
                     ],
@@ -142,39 +145,28 @@ class HistoricoAluno extends StatelessWidget {
                 ),
               ),
               bottomNavigationBar: BottomAppBar(
-              child: Container(
-                color: Color(0xFF005AAA),
-                height: 30.0,
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      'Aluno: ${nome_aluno}',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
-                      ),
-                    ),
-                    Text(
-                      'Matrícula: ${matricula_aluno}',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
-                      ),
-                    ),
-                  ],
+                child: Container(
+                  color: Color(0xFF005AAA),
+                  height: 30.0,
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      buildText(text: 'Aluno: ${nome_aluno}', fontSize: 16, color: Colors.white, isBold: false),
+                      buildText(text: 'Matrícula: ${matricula_aluno}', fontSize: 16, color: Colors.white, isBold: false),
+                    ],
+                  ),
                 ),
               ),
-            ),
             );
           }
         }
       },
     );
   }
+}
 
-  Widget createRichText(String label, String value) {
+Widget createRichText(String label, String value) {
     return RichText(
       text: TextSpan(
         style: TextStyle(
@@ -185,19 +177,34 @@ class HistoricoAluno extends StatelessWidget {
           TextSpan(
             text: '$label ',
             style: TextStyle(
-              fontWeight: FontWeight.bold, // Define a palavra em negrito
+              fontWeight: FontWeight.bold,
             ),
           ),
           TextSpan(text: '$value'),
         ],
       ),
     );
-  }
+}
 
-  Widget createTableCellTittle(String text) {
+Widget createTableCellTittle(String text) {
     return TableCell(
       child: Center(child: Text(text, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold))),
       verticalAlignment: TableCellVerticalAlignment.middle,
     );
-  }
+}
+
+Widget buildText({
+  required String text,
+  double fontSize = 14,
+  Color color = Colors.black,
+  bool isBold = false,
+}) {
+  return Text(
+    text,
+    style: TextStyle(
+      fontSize: fontSize,
+      color: color,
+      fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+    ),
+  );
 }

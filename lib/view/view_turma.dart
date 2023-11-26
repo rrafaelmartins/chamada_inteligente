@@ -42,8 +42,7 @@ class TurmaPage extends StatelessWidget {
     await Geolocator.requestPermission();
     await Geolocator.checkPermission();
 
-      Position prof_position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+    Position prof_position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
     localizacao = '${prof_position.latitude},${prof_position.longitude}';
 
@@ -57,10 +56,10 @@ class TurmaPage extends StatelessWidget {
     );
 
     if (response.statusCode == 200) {
-      _showSuccessDialog(context); // Chamando o diálogo de sucesso
+      _showSuccessDialog(context, "Chamada iniciada!");
     }
     else{
-      _showFailDialog(context, Text("Ocorreu um erro. Tente novamente"));
+      _showFailDialog(context, "Ocorreu um erro. Tente novamente!");
     }
 
     Map<String, dynamic> responseData = json.decode(response.body);
@@ -68,7 +67,7 @@ class TurmaPage extends StatelessWidget {
     return responseData;
     }
     else{
-      _showFailDialog(context, Text("Já existe uma chamada em aberto"));
+      _showFailDialog(context, "Já existe uma chamada em aberto!");
     }
     
     return {'status': 'chamada_nao_iniciada', 'data': responseData2};
@@ -94,10 +93,10 @@ class TurmaPage extends StatelessWidget {
     );
 
     if (response.statusCode == 200) {
-      _showSuccessDialog(context); // Chamando o diálogo de sucesso
+      _showSuccessDialog(context, "Chamada finalizada!");
     }
     else{
-      _showFailDialog(context, Text("Ocorreu um erro. Tente novamente"));
+      _showFailDialog(context, "Ocorreu um erro. Tente novamente!");
     }
 
     List<dynamic> responseData = json.decode(response.body);
@@ -105,161 +104,188 @@ class TurmaPage extends StatelessWidget {
     return responseData;
     }
     else{
-      _showFailDialog(context, Text("Não existe chamada em aberto para fechar"));
+      _showFailDialog(context, "Não existe chamada em aberto para finzalizar!");
     }
     return responseData2;
-  }
-
-  void _showSuccessDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Sucesso"),
-          content: Text("A requisição foi feita com sucesso!"),
-          actions: <Widget>[
-            TextButton(
-              child: Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop(); // Fecha o diálogo
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-    void _showFailDialog(BuildContext context, Text texto) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Erro"),
-          content: texto,
-          actions: <Widget>[
-            TextButton(
-              child: Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop(); // Fecha o diálogo
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<dynamic>>(
-    future: get_nome_matricula_professor(),
-    builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            backgroundColor: Color(0xFF005AAA),
-          ),
-          body: Center(child: CircularProgressIndicator()),
-        );
-      } else {
+      future: get_nome_matricula_professor(),
+      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             backgroundColor: Colors.white,
-            appBar: AppBar(title: Text('${disciplina}: ${codTurma}'),
-          backgroundColor: Color(0xFF005AAA),
-          centerTitle: true,
-      ),
-      body: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(height: 90.0),
-                InkWell( // Adicionei o InkWell aqui
-                onTap: () {
-                  _iniciarChamada(context);
-                },
-                child: _buildRowWithIconAndText(Icons.menu_book, "Iniciar chamada"),
+            appBar: AppBar(
+              backgroundColor: Color(0xFF005AAA),
+            ),
+            body: Center(child: CircularProgressIndicator()),
+          );
+        } else {
+          return Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              title: buildText(text: '${disciplina}: ${codTurma}', fontSize: 20, color: Colors.white, isBold: false),
+              backgroundColor: Color(0xFF005AAA),
+              centerTitle: true,
+            ),
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(height: 90.0),
+                buildInkWellWithIcon(Icons.menu_book,"Iniciar chamada",() {_iniciarChamada(context);},),
+                buildInkWellWithIcon(Icons.emoji_flags,"Finalizar chamada",() {_finalizarChamada(context);},),
+                buildInkWellWithIcon(Icons.remove_red_eye_outlined,"Visualizar chamada",() {Navigator.push(context,MaterialPageRoute(
+                  builder: (context) => VisualizarProf(
+                    turmaChamada: disciplina.toUpperCase(),
+                    codTurma: codTurma.toUpperCase(),
+                    id_turma: id_turma,
+                    id_professor: id_professor,
+                  ),
+                ),);},),
+                buildInkWellWithIcon(Icons.timer_sharp,"Agendar chamada",() {Navigator.push(context,MaterialPageRoute(
+                  builder: (context) => AgendarProfScreen(
+                          id_professor: id_professor,
+                        ),
+                ),);},),
+                buildInkWellWithIcon(Icons.history,"Histórico de chamadas",() {Navigator.push(context,MaterialPageRoute(
+                  builder: (context) => HistoricoProfessor(
+                    turmaChamada: disciplina,
+                    codTurma: codTurma,
+                    id_professor: id_professor,
+                    id_turma: id_turma,
+                  ),
+                ),);},),
+                buildInkWellWithIcon(Icons.query_stats,"Estatísticas da Turma",() {Navigator.push(context,MaterialPageRoute(
+                  builder: (context) => Estatisticas(
+                    turmaChamada: disciplina,
+                    codTurma: codTurma,
+                    id_professor: id_professor,
+                    id_turma: id_turma,
+                  ),
+                ),);},),
+              ],
+            ),           
+            bottomNavigationBar: BottomAppBar(
+              child: Container(
+                color: Color(0xFF005AAA),
+                height: 30.0,
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                      buildText(text: 'Professor: ${nome_professor}', fontSize: 16, color: Colors.white, isBold: false),
+                      buildText(text: 'Matrícula: ${matricula_professor}', fontSize: 16, color: Colors.white, isBold: false),
+                  ],
+                ),
               ),
-              
-              SizedBox(height: 40.0),
-                InkWell( // Adicionei o InkWell aqui
-                onTap: () {
-                  _finalizarChamada(context);
-                },
-                child: _buildRowWithIconAndText(Icons.emoji_flags, "Finalizar chamada"),
-              ),
-              
-              SizedBox(height: 40.0),
-              InkWell( // Adicionei o InkWell aqui
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => VisualizarProf(turmaChamada: disciplina.toUpperCase(), codTurma: codTurma.toUpperCase(), id_turma: id_turma, id_professor: id_professor)),
-                  );
-                },
-                child: _buildRowWithIconAndText(Icons.remove_red_eye_outlined, "Visualizar chamada"),
-              ),
-              SizedBox(height: 40.0),
-              InkWell( // Adicionei o InkWell aqui
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AgendarProfScreen(id_professor: id_professor)),
-                  );
-                },
-                child: _buildRowWithIconAndText(Icons.timer_sharp, "Agendar chamada"),
-              ),
-              SizedBox(height: 40.0),
-                InkWell( // Adicionei o InkWell aqui
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HistoricoProfessor(turmaChamada: disciplina, codTurma: codTurma, id_professor: id_professor, id_turma: id_turma)),
-                  );
-                },
-                child: _buildRowWithIconAndText(Icons.history, "Histórico de chamadas"),
-              ),
-              SizedBox(height: 40.0),
-                InkWell( // Adicionei o InkWell aqui
-                onTap: () {
-                  Navigator.push(
-                    context,                                //chamar as estatisticas
-                    MaterialPageRoute(builder: (context) => Estatisticas(turmaChamada: disciplina, codTurma: codTurma, id_professor: id_professor, id_turma: id_turma)),
-                  );
-                },
-                child: _buildRowWithIconAndText(Icons.query_stats, "Estatísticas da Turma"),
-              ),
-            ],
-          ),
-          bottomNavigationBar: BottomAppBar(
-        child: Container(
-          color: Color(0xFF005AAA),
-          height: 30.0,
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text('Professor: ${nome_professor}',style: TextStyle(color: Colors.white,fontSize: 16.0),),
-              Text('Matrícula: ${matricula_professor}',style: TextStyle(color: Colors.white,fontSize: 16.0),),
-            ],
-          ),
-        ),
-      ),
+            ),
+          );
+        }
+      },
     );
-  }});
   }
+}
 
-  Widget _buildRowWithIconAndText(IconData iconName, String text) {
-    return Row(
-      children: [
-        SizedBox(width: 60), // Espaço à esquerda para deslocar
-        Icon(iconName, color: Colors.black, size: 40),
-        SizedBox(width: 10),
-        Text(
-          text,
-          style: TextStyle(fontSize: 24.0),
+Widget _buildRowWithIconAndText(IconData iconName, String text) {
+  return Row(
+    children: [
+      SizedBox(width: 60),
+      Icon(iconName, color: Colors.black, size: 40),
+      SizedBox(width: 10),
+      Text(
+        text,
+        style: TextStyle(fontSize: 24.0),
+      ),
+    ],
+  );
+}
+
+void _showSuccessDialog(BuildContext context, String texto) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: null,
+        content: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Text(
+            texto,
+            textAlign: TextAlign.center,
+          ),
         ),
-      ],
-    );
-  }
+        actions: <Widget>[
+          Center(
+            child: TextButton(
+              child: Text("OK",style: TextStyle(color: Color(0xFF005AAA)),),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void _showFailDialog(BuildContext context, String texto) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: null,
+        content: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Text(
+            texto,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        actions: <Widget>[
+          Center(
+            child: TextButton(
+              child: Text("OK",style: TextStyle(color: Color(0xFF005AAA)),),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Widget buildInkWellWithIcon(
+  IconData icon,
+  String text,
+  VoidCallback onTapAction,
+) {
+  return Column(
+    children: [
+      InkWell(
+        onTap: onTapAction,
+        child: _buildRowWithIconAndText(icon, text),
+      ),
+      SizedBox(height: 40.0),
+    ],
+  );
+}
+
+Widget buildText({
+  required String text,
+  double fontSize = 14,
+  Color color = Colors.black,
+  bool isBold = false,
+}) {
+  return Text(
+    text,
+    style: TextStyle(
+      fontSize: fontSize,
+      color: color,
+      fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+    ),
+  );
 }

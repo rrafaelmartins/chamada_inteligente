@@ -104,7 +104,6 @@ def delete_presenca_aluno(id_turma: str, matricula: str):
                 """
     cursor.execute(comando)
     resultado = cursor.fetchall()
-    print(resultado)
     conexao.commit()
     cursor.close()
     conexao.close()
@@ -144,7 +143,6 @@ def export_chamada(id_turma: str, data: str):
         """
     cursor.execute(comando)
     resultado = cursor.fetchall()
-    print(resultado)
     conexao.commit()
     cursor.close()
     conexao.close()
@@ -229,6 +227,19 @@ def get_numero_alunos(id_turma: str):
     cursor = conexao.cursor()
     comando = f"""SELECT COUNT(id_aluno) AS numero_de_alunos_inscritos
                 FROM Inscricao
+                WHERE id_turma = {id_turma};"""
+    cursor.execute(comando)
+    resultado = cursor.fetchall()
+    cursor.close()
+    conexao.close()
+    return jsonify(resultado), 200
+
+@professor_blueprint.route('/get_numero_aulas/<string:id_turma>', methods=['GET'])
+def get_numero_aulas(id_turma: str):
+    conexao = open_conexao()
+    cursor = conexao.cursor()
+    comando = f"""SELECT COUNT(id_aula) AS quantidade_de_aulas
+                FROM Aula
                 WHERE id_turma = {id_turma};"""
     cursor.execute(comando)
     resultado = cursor.fetchall()

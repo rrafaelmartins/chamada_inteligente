@@ -45,7 +45,7 @@ SELECT
          FROM Presencas AS P 
          INNER JOIN Aula AS A ON P.id_aula = A.id_aula 
          WHERE A.id_turma = {id_turma} AND P.id_aluno = {id_aluno})
-    ) / (SELECT COUNT(*) FROM Aula WHERE id_turma = {id_turma})) * 100, 2) AS Percentual_Faltas
+    ) / (SELECT COUNT(*) FROM Aula WHERE id_turma = {id_turma})) * 100, 2) AS Percentual_Faltas;
 """
     cursor.execute(comando)
     resultado = cursor.fetchall()
