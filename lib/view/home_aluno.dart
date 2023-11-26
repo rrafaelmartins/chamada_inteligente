@@ -191,9 +191,13 @@ class _HomeAlunoState extends State<HomeAluno> {
     List<dynamic> responseData5 = json.decode(response5.body);
     print(responseData5);
 
-    var url44 = Uri.http('${env_url}', '/verificar_presenca/$id_aluno/${responseData5[0][0]}');
-    var response44 = await http.get(url44);
-    List<dynamic> responseData44 = json.decode(response44.body);
+    List<dynamic> responseData44 = responseData;
+    if (responseData5.isNotEmpty){
+      var url44 = Uri.http('${env_url}', '/verificar_presenca/$id_aluno/${responseData5[0][0]}');
+      var response44 = await http.get(url44);
+      responseData44 = json.decode(response44.body);
+    }
+
   
 
     if (responseData5.isNotEmpty && isSwitched == false && responseData44[0][0] == 0){
@@ -222,7 +226,8 @@ class _HomeAlunoState extends State<HomeAluno> {
               body: body,
             );
             if (response.statusCode == 200) {
-              _showSuccessDialog(context); // Chamando o diálogo de sucesso
+              _showSuccessDialog(context);
+              return responseData; // Chamando o diálogo de sucesso
             }
             else{
               _showFailDialog(context, Text("Ocorreu um erro. Tente novamente"));
