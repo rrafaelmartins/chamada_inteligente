@@ -190,19 +190,20 @@ class _HomeAlunoState extends State<HomeAluno> {
     var response5 = await http.get(url5);
     List<dynamic> responseData5 = json.decode(response5.body);
     print(responseData5);
+
+    var url44 = Uri.http('${env_url}', '/verificar_presenca/$id_aluno/${responseData5[0][0]}');
+    var response44 = await http.get(url44);
+    List<dynamic> responseData44 = json.decode(response44.body);
   
 
-    if (responseData5.isNotEmpty && isSwitched == false){
+    if (responseData5.isNotEmpty && isSwitched == false && responseData44[0][0] == 0){
       String nometurma = responseData5[0][1];
       _showChamadaDialog(context, Text("Existe uma chamada em aberto de: ${nometurma}!"));
     }
 
     else if (responseData5.isNotEmpty && isSwitched == true){
-      var url2 = Uri.http('${env_url}', '/verificar_presenca/$id_aluno/${responseData5[0][0]}');
-      var response2 = await http.get(url2);
-      List<dynamic> responseData2 = json.decode(response2.body);
 
-      if (responseData2[0][0] == 1){
+      if (responseData44[0][0] == 1){
         return responseData;
       }
 

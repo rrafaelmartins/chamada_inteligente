@@ -61,10 +61,14 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
     var response9 = await http.get(url9);
     List<dynamic> responseData9 = json.decode(response9.body);
     if (responseData9[0][0] == 1){
+      print("entrou no true");
       isSwitched2 = true;
+      print(isSwitched2);
     }
     else{
+      print("entrou no false");
       isSwitched2 = false;
+      print(isSwitched2);
     }
     return responseData9;
   }
