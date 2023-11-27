@@ -11,7 +11,7 @@ conexao = mysql.connector.connect(
     host='localhost',
     user='root',
     password=f'{password}',
-    database='intelitestenovo'
+    database='ChamadaInteligente'
 )
 
 def open_conexao():
@@ -19,7 +19,7 @@ def open_conexao():
     host='localhost',
     user='root',
     password=f'{password}',
-    database='intelitestenovo'
+    database='ChamadaInteligente'
 )
     return conexao
 

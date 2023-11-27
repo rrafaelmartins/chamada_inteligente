@@ -119,7 +119,14 @@ class Estatisticas extends StatelessWidget {
                           TableRow(children: [
                             createTableCell('${aluno[0]}'),
                             createTableCell('${aluno[1]}'),
-                            createTableCell('${aluno[2]}'),
+                            TableCell(
+                            child: Center(
+                              child: aluno[2] == null
+                                  ? createTableCell('0.00%')
+                                  : createTableCell('${aluno[2]}%'),
+                            ),
+                            verticalAlignment: TableCellVerticalAlignment.middle,
+                          ),
                             createTableCell('${aluno[3]}'),
                             createTableCell('${aluno[4]}'),
                             createTableCell('${aluno[5]}'),                          
