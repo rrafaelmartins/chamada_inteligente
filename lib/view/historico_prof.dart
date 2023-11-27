@@ -71,12 +71,12 @@ class HistoricoProfessor extends StatelessWidget {
     return responseData;
   }
 
-  void export_chamada(BuildContext context, String data) async {
+  void export_chamada(BuildContext context, String data, int id_aula) async {
 
     //Esta não é a forma optimal. Deveria verificar qual o caminho adequado de cada dispositivo, mas não foi possível.
     DateTime dataObjeto = DateFormat("dd/MM/yyyy").parse(data);
     String dataFormatada = DateFormat("yyyy-MM-dd").format(dataObjeto);
-    var url12 = Uri.http('${env_url}', '/export_chamada/$id_turma/$dataFormatada');
+    var url12 = Uri.http('${env_url}', '/export_chamada/$id_turma/$dataFormatada/$id_aula');
     var response12 = await http.get(url12);
 
     if (response12.statusCode == 200){
@@ -164,7 +164,7 @@ class HistoricoProfessor extends StatelessWidget {
                             TableCell(
                               child: GestureDetector(
                                 onTap: () {
-                                  export_chamada(context, result[0]);
+                                  export_chamada(context, result[0], result[2]);
                                 },
                                 child: Icon(Icons.download_sharp, color: Colors.black),
                               ),

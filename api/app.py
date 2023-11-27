@@ -29,6 +29,7 @@ app.register_blueprint(professor_blueprint)
 CORS(app)
 """ ... """
 
+
 def get_host_ip():
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -62,6 +63,7 @@ def write_ip_to_env(ip, file_path='chamada_inteligente/.env'):
 
 url = get_host_ip()
 write_ip_to_env(url)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

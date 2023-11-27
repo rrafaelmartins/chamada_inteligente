@@ -108,8 +108,8 @@ def delete_presenca_aluno(id_turma: str, matricula: str):
     conexao.close()
     return jsonify({"status": "success", "message": "presenca retirada"}), 200
    
-@professor_blueprint.route('/export_chamada/<string:id_turma>/<string:data>', methods=['GET'])
-def export_chamada(id_turma: str, data: str):
+@professor_blueprint.route('/export_chamada/<string:id_turma>/<string:data>/<string:id_aula>', methods=['GET'])
+def export_chamada(id_turma: str, data: str, id_aula:str):
     conexao = open_conexao()
     cursor = conexao.cursor()
     comando = f"""
@@ -120,7 +120,7 @@ def export_chamada(id_turma: str, data: str):
         WHEN p.id_aluno IS NOT NULL THEN 'Presente'
         ELSE 'Ausente' 
         END AS presenca
-        INTO OUTFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/{data}.csv'
+        INTO OUTFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/aula_{id_aula}_data_{data}.csv'
         FIELDS TERMINATED BY ','
         ENCLOSED BY '"'
         LINES TERMINATED BY '\n'
@@ -136,7 +136,7 @@ def export_chamada(id_turma: str, data: str):
             Presencas p ON a.id_aula = p.id_aula AND al.id_aluno = p.id_aluno
         WHERE 
             a.id_turma = {id_turma} 
-            AND DATE(a.data_hora_inicio) = '{data}';
+            AND a.id_aula = {id_aula};
 
         """
     cursor.execute(comando)
