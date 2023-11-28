@@ -4,6 +4,7 @@ from login_manager import login_blueprint
 from aluno_manager import aluno_blueprint
 from prof_manager import professor_blueprint
 import socket
+import os
 from dotenv import dotenv_values, set_key
 
 class FlaskSingleton:
@@ -41,9 +42,14 @@ def get_host_ip():
         return "127.0.0.1" 
     
 
-def write_ip_to_env(ip, file_path='chamada_inteligente/.env'):
-    url_exists = False
+def write_ip_to_env(ip, file_name='.env'):
+    script_directory = os.path.dirname(__file__)  # Diretório onde o script está localizado
+    project_root = os.path.dirname(script_directory)  # Subir um nível para chegar à pasta root
 
+    file_path = os.path.join(project_root, file_name)  # Constrói o caminho completo para o arquivo .env
+
+    # Restante do código para escrever no arquivo
+    url_exists = False
     updated_lines = []
 
     with open(file_path, 'r') as file:
