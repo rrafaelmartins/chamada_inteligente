@@ -136,12 +136,6 @@ class _ViewTurmaAlunoState extends State<ViewTurmaAluno> {
       aluno_position.longitude,
     );
 
-    print("--------------------");
-    print(_centerChamada.latitude);
-    print(_centerChamada.longitude);
-    print("--------------------");
-    print(aluno_position.latitude);
-    print(aluno_position.longitude);
 
       if (distanceInMeters <= 5) {
         isInArea = true;
