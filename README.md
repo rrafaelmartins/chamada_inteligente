@@ -30,7 +30,7 @@ Trabalho da disciplina de Engenharia de Software II que tem como objetivo implem
   - Na pasta root do projeto, crie um arquivo .env com as seguintes variáveis:   
     - PASSWORD: Sua senha de acesso ao localhost do MySQL
     - URL: A URL gerada pelo Flask no terminal ao rodar o arquivo app.py (nosso backend). Não utilizar 127.0.0.1 para emuladores.
-    - database: Nome do seu schema no MySQL ( TO-DOOOOOOOOOO)!!!!!!!!!!!!!!!!!!!!!
+    - database: Nome do seu schema no MySQL
    
 ## 4. Utilização
 
@@ -40,11 +40,6 @@ Trabalho da disciplina de Engenharia de Software II que tem como objetivo implem
   - Login de aluno: (1001 - senha1), (1002 - senha2), ..., (1020 - senha20).
   - Login de professor: (2001 - senha1), (2002 - senha2), ..., (2005 - senha5).
 
-## 5. Testes
-
-- Testes unitários: ( TO-DOOOOOOOOOO)!!!!!!!!!!!!!!!!!!!!!
-- Testes de fumaça: ( TO-DOOOOOOOOOO)!!!!!!!!!!!!!!!!!!!!!
-
 ## 5. Documentação
 
-- Link do Google Drive de monitoramento e controle do projeto: ( TO-DOOOOOOOOOO)!!!!!!!!!!!!!!!!!!!!!
+- Link do Google Drive de monitoramento e controle do projeto: https://drive.google.com/drive/folders/1qVf2tT-m6p43NgyvQmJcWfTOlHQD1erp?usp=drive_link
